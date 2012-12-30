@@ -1,0 +1,34 @@
+.metadata
+bin/**
+out/**
+release/**
+bin-debug/**
+tmp/**
+tmp/**/*
+res/raw/**
+raw/**
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+
+# built application files
+*.apk
+*.ap_
+
+# files for the dex VM
+*.dex
+
+# Java class files
+*.class
+*.air
+# generated files
+release/
+bin-debug/        
+bin/
+out/
+gen/
+.DS_Store
