@@ -70,40 +70,42 @@ class CuteMain extends Sprite {
 		btdMap[1] = "assets/Dirt_Block.png";
 		btdMap[2] = "assets/Water_Block.png";
 		btdMap[3] = "assets/Wood_Block.png";
+		btdMap[4] = "assets/Star.png";
+		btdMap[5] = "assets/Key.png";
+		btdMap[6] = "assets/Tree_Tall.png";
+		btdMap[7] = "assets/Character_Princess_Girl.png";
+
+
 
 
 		var tileMap:Array<Array<Int>> = [
-			[1,1,1,1,1,1,1,1,1,1],
-			[0,1,0,0,2,2,0,2,2,2],
-			[0,1,1,1,2,2,2,2,2,3],
-			[0,0,0,1,2,0,-1,3,3,3],
-			[1,1,1,1,2,0,3,3,3,3],
-			[1,1,1,2,2,2,2,3,3,3],
-			[1,1,1,2,2,2,2,3,3,3],
-			[1,1,1,0,0,3,3,3,3,3]
+			[ 1, 1, 1, 1, 1, 1, 1, 1, 1 ],
+			[ 0, 1, 0, 0, 2, 2, 0, 2, 2 ],
+			[ 0, 1, 1, 1, 2, 2, 2, 2, 3 ],
+			[ 0, 0, 0, 1, 2, 0, 3, 3, 1 ],
+			[ 1, 1, 1, 1, 2, 0, 3, 3, 1 ]
+		];
+
+		var objMap:Array<Array<Int>> = [
+			[-1,-1,-1,-1,-1,-1, 7,-1,-1 ],
+			[-1,-1,-1,-1,-1,-1,-1,-1,-1 ],
+			[-1,-1,-1,-1,-1,-1,-1,-1,-1 ],
+			[-1,-1,-1,-1, 7, 5,-1,-1,-1 ],
+			[-1, 5,-1,-1, 6,-1,-1,-1,-1 ]
 		];
 		
 		engine = new TileEngine();
 
-		tileGrid = engine.createGrid( btdMap, tileMap );
+		tileGrid = engine.createGrid( btdMap, tileMap, objMap );
 		
+		tileGrid.x = ((Lib.current.stage.stageWidth - tileGrid.width) * 0.5);
+		tileGrid.y = ((Lib.current.stage.stageHeight - tileGrid.height) * 0.5);
 
-		tileMap = [
-			[1,1,1,1,1,1,1,1,1,1],
-			[0,1,0,0,2,2,0,2,2,2],
-			[0,1,1,1,2,2,2,2,2,3],
-			[0,0,0,1,2,0,-1,3,3,3],
-			[1,1,1,0,0,3,3,3,3,3]
-		];
-
-
-		tileGrid = engine.createGrid( btdMap, tileMap );
-	
 		addChild(tileGrid);
 
 
 		boy = new Entity (Assets.getBitmapData ("assets/Character_Boy.png"));
- 		addChild(boy);
+ 		tileGrid.addChild(boy);
 			
 		
 	}
@@ -146,7 +148,13 @@ class CuteMain extends Sprite {
 	private function stage_onClick (event:MouseEvent):Void {
 		
 
-		Actuate.tween(boy, 0.5, { x: ( event.stageX - (boy.width * 0.5) ), y: (event.stageY - boy.height + 40) }, false).ease(Quad.easeOut);
+		var tile:Tile = engine.findTileByMousePosition(event.stageX , event.stageY);
+
+		if (tile != null) {
+			var diffY:Int = ((tile.type == Tile.TYPE_GROUND_TALL)?-80:-40);
+			Actuate.tween(boy, 0.5, { x: ( tile.x ), y: (tile.y + diffY ) }, false).ease(Quad.easeOut);
+		}
+		
 		/*boy.y = tile.y - 40;
 		boy.x = tile.x;
 
