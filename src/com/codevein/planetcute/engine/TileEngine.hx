@@ -2,6 +2,7 @@ package com.codevein.planetcute.engine;
 
 import flash.display.BitmapData;
 import flash.display.Sprite;
+import flash.geom.Point;
 
 
 class TileEngine  {
@@ -22,7 +23,6 @@ class TileEngine  {
 
 	private var imageList:Array<String> = null;
 	private var tileMap:Array<Array<Int>> = null;
-	
 	private var objectMap:Array<Array<Int>> = null;
 	
 	
@@ -44,9 +44,10 @@ class TileEngine  {
 		}
 		imageList = null;
 		tileMap = null;
+		objectMap = null;
 	}
 
-	public function createGrid(aImageList:Array<String>, aTileMap:Array<Array<Int>>, aObjMap:Array<Array<Int>> = null):Sprite {
+	public function createGrid(aImageList:Array<String>, aTileMap:Array<Array<Int>>, aObjMap:Array<Array<Int>> = null, tileCreateCall:Tile->Void= null, objectCreateCall:Tile->Void= null) :Sprite {
 
 		var cols:Array<Int> ;
 		var tileId:Int;
@@ -94,13 +95,18 @@ class TileEngine  {
 					
 					}
 
-					tile = new Tile(imageList[tileId], tileId, tileType);
+					tile = new Tile(imageList[tileId], tileId, tileType, j, i);
 					tile.x = tile.width * j;
 					tile.y = (TileEngine.tileYOffset * i) - marginYOffset;
 					tile.name = "tile_"+i+"_"+j;
+
 					grid.addChild(tile);
 
-						
+					if (tileCreateCall != null) {
+						tileCreateCall(tile);
+					}
+					
+
 
 					
 
@@ -125,7 +131,7 @@ class TileEngine  {
 
 					if (tileId > -1) {
 
-						tile = new Tile(imageList[tileId], tileId, Tile.TYPE_OBJECT);
+						tile = new Tile(imageList[tileId], tileId, Tile.TYPE_OBJECT, j, i);
 						tile.x = tile.width * j;
 						tile.y = (TileEngine.tileYOffset * i) - ((tileType  == Tile.TYPE_GROUND_TALL)?80:40) - marginYOffset ;
 						tile.name = "obj_"+i+"_"+j;
@@ -146,6 +152,10 @@ class TileEngine  {
 							
 						}
 
+						if (objectCreateCall != null) {
+							objectCreateCall(tile);
+						}
+
 					}
 				}
 			}		
@@ -157,15 +167,78 @@ class TileEngine  {
 
 	}
 
+	public function putObjectOverTile(ent:Entity, posX:Int, posY:Int) {
+
+		var tile:Tile = cast(grid.getChildByName( "tile_"+posY+"_"+posX ), Tile);
+
+		if (tile != null ) {
+
+			var diffY:Int = ((tile.type == Tile.TYPE_GROUND_TALL)?-80:-40);
+			
+			ent.x = tile.x;
+			ent.y = tile.y + diffY;
+
+			posY++;
+
+
+						
+			if (posY < tileMap.length) {
+				var next = cast(grid.getChildByName( "tile_"+posY+"_"+posX ), Tile);
+				if (next != null && next.type ==  Tile.TYPE_GROUND_TALL) {
+					var idx:Int = grid.getChildIndex(next);
+					grid.setChildIndex(ent, idx - 1);
+				}
+				
+			}
+		
+		}
+
+	}
+
+	public function findTileByGridPosition(aGridX:Float, aGridY:Float):Tile {
+		var dp:flash.display.DisplayObject = grid.getChildByName( "tile_"+aGridY+"_"+aGridX );
+ 		var tile:Tile = null;
+		
+ 		if (dp != null) {
+
+ 			tile = cast(dp, Tile);
+
+ 		}
+		return tile; 
+	}	
+
+	public function findObjectByGridPosition(aGridX:Float, aGridY:Float):Tile {
+		var dp:flash.display.DisplayObject = grid.getChildByName( "obj_"+aGridY+"_"+aGridX );
+ 		var tile:Tile = null;
+		
+ 		if (dp != null) {
+
+ 			tile = cast(dp, Tile);
+
+ 		}
+		return tile; 
+	}	
+
+	public function findGridPositionByMouse(aX:Float, aY:Float):Point {
+		var i:Int = Std.int( ( aY - this.grid.y ) / VIRTUAL_TILE_HEIGHT );
+		var j:Int = Std.int( ( aX  - this.grid.x) / VIRTUAL_TILE_WIDTH );
+		var p:Point = new Point();
+		p.x = j;
+		p.y = i;
+
+		return p;
+	}	
+
 	public function findTileByMousePosition(aX:Float, aY:Float):Tile {
+
 		var i:Int = Std.int( ( aY - this.grid.y ) / VIRTUAL_TILE_HEIGHT );
 		var j:Int = Std.int( ( aX  - this.grid.x) / VIRTUAL_TILE_WIDTH );
 		
 		var tile:Tile = null;
 		var dp:flash.display.DisplayObject = grid.getChildByName( "tile_"+i+"_"+j );
 
-		if (dp != null ) {
-			
+		if (dp != null && dp.y <= ( i * VIRTUAL_TILE_HEIGHT) ) {
+
 			var posY = i+1;
 			var next:flash.display.DisplayObject = grid.getChildByName( "tile_"+posY+"_"+j );
 			

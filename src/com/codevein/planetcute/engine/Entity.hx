@@ -10,6 +10,7 @@ import flash.display.BitmapData;
 class Entity extends Sprite {
 
 	private var bitmap:Bitmap;
+	public  var disabled:Bool;
 	
 	public function new (aBtData:BitmapData) {
 		
