@@ -37,10 +37,11 @@ class TileEngine  {
 		var tile:Tile;
 
 		while (grid.numChildren > 0) {
+			if (Std.is(grid.getChildAt(0),Tile)) {
 				tile = cast(grid.getChildAt(0), Tile);
 				tile.finish();
-			    grid.removeChildAt(0);
-
+			}
+			grid.removeChildAt(0);
 		}
 		imageList = null;
 		tileMap = null;
@@ -64,6 +65,8 @@ class TileEngine  {
 		} else {
 			
 			finish();
+			grid = new Sprite();
+
 
 		}
 
@@ -167,21 +170,19 @@ class TileEngine  {
 
 	}
 
-	public function putObjectOverTile(ent:Entity, posX:Int, posY:Int) {
+	public function putObjectOverTile(ent:Entity, posX:Float, posY:Float) {
 
 		var tile:Tile = cast(grid.getChildByName( "tile_"+posY+"_"+posX ), Tile);
 
 		if (tile != null ) {
 
-			var diffY:Int = ((tile.type == Tile.TYPE_GROUND_TALL)?-80:-40);
+			var diffY:Int = ((tile.type == Tile.TYPE_GROUND_TALL)?-40:-20);
 			
 			ent.x = tile.x;
 			ent.y = tile.y + diffY;
 
 			posY++;
 
-
-						
 			if (posY < tileMap.length) {
 				var next = cast(grid.getChildByName( "tile_"+posY+"_"+posX ), Tile);
 				if (next != null && next.type ==  Tile.TYPE_GROUND_TALL) {

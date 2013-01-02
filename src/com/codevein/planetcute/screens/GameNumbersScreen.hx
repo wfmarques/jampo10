@@ -20,15 +20,23 @@ import com.codevein.planetcute.engine.Entity;
 import com.codevein.planetcute.util.TextUtil;
 
 import com.codevein.planetcute.GameController;
+import com.codevein.planetcute.engine.GameMap;
+import com.codevein.planetcute.GameNumbersMaps;
+
+
 
 
 class GameNumbersScreen extends BaseScreen {
 
 
+	private var maps:GameNumbersMaps;
 	private var engine:TileEngine;
 	private var tileGrid:Sprite;
+	private var lastTile:Tile;
 	private var gameTitle:TextField;
 	private var actor:Entity;
+	private var phase:Int = 0;
+	private var nextItem:Int = 0;
 
 	private var btdMap:Array<String> ;
 
@@ -44,59 +52,50 @@ class GameNumbersScreen extends BaseScreen {
 
 		actor = GameController.getInstance().getMainCharacter();
 
-		
-		btdMap = new Array<String>();
-		btdMap[0] = "assets/imgs/Water_Block.png";
-		btdMap[1] = "assets/imgs/Stone_Block_Tall.png";
-		btdMap[2] = "assets/imgs/Stone_Block.png";
-		btdMap[3] = "assets/imgs/Wall_Block_Tall.png";
-		btdMap[4] = "assets/imgs/Grass_Block.png";
-		btdMap[5] = "assets/imgs/Star.png";
-		
-		
 		engine = new TileEngine();
-		
 
-		
+		maps = new GameNumbersMaps();
+
 	}
 
 	private function onCreateTile(tile:Tile) {
-		tile.alpha = 0;
-		var posY:Float = tile.y;
+		
+		
+		if (tile.id != GameNumbersMaps.NUMBER_CONTAINER) {
+			tile.alpha = 0;
+			var posY:Float = tile.y;
+			tile.y -= 40;
+			Actuate.tween(tile, 0.5 * Math.random(), { alpha:1, y: posY } ).ease(Quad.easeInOut);
+		} else if (tile.numChildren == 1) {
+			var value:String = maps.getData(phase).answers[nextItem++];
+			var numText:TextField = TextUtil.getInstance().createTextField(GameController.ITEM_GAME_FONT, value, 64, 0x000000);
+			numText.x = (tile.width - numText.width) * 0.5;
+			numText.y = (tile.height - numText.height) * 0.5;
+			tile.answerData = value;
+			tile.addChild(numText);
 
-		tile.y -= 40;
-		Actuate.tween(tile, 0.5 * Math.random(), { alpha:1, y: posY } ).ease(Quad.easeInOut);
-
+		}
 	}
 
 	private function onCreateObject(tile:Tile) {
-		tile.alpha = 0;
-		Actuate.tween(tile, 1, { alpha:1} ).delay(3).ease(Quad.easeInOut);
 
+		var target:flash.geom.Point = maps.getData(phase).targetTilePosition;
+
+		if (  tile.gridX == target.x && tile.gridY == target.y ) {
+			tile.alpha = 0;
+			Actuate.tween(tile, 1, { alpha:1} ).delay(1).ease(Quad.easeInOut);
+		}
+		
+		
 	}
 	
 	public override function onStart() {
 
-		var tileMap:Array<Array<Int>> = [
-			[ 0, 0, 0, 0, 0],
-			[ 0, 0, 1, 0, 0],
-			[ 0, 1, 0, 1, 0],
-			[ 0, 0, 3, 0, 0],
-			[ 0, 0, 0, 0, 0],
-			
-		];
-
-		var objMap:Array<Array<Int>> = [
-			[ -1, -1, -1, -1, -1],
-			[ -1, -1, -1, -1, -1],
-			[ -1, -1, -1, -1, -1],
-			[ -1, -1,  5, -1, -1],
-			[ -1, -1, -1, -1, -1],
-		];
+		nextItem = 0;//reseta o contador
 		
+		tileGrid = engine.createGrid( maps.getAssetsList(), maps.getData(phase).tileMap , maps.getData(phase).objectMap , onCreateTile, onCreateObject );
 		
-		tileGrid = engine.createGrid( btdMap, tileMap, objMap, onCreateTile, onCreateObject );
-		
+		tileGrid.alpha = 1;
 
 		tileGrid.x = ((GameController.SCREEN_WIDTH - tileGrid.width) * 0.5);
 		tileGrid.y = ((GameController.SCREEN_HEIGHT - tileGrid.height) * 0.5);
@@ -106,26 +105,32 @@ class GameNumbersScreen extends BaseScreen {
 		
  		tileGrid.addChild(actor);
 		
- 		engine.putObjectOverTile(actor, 2, 1);
+ 		engine.putObjectOverTile(actor, maps.getData(phase).startTilePosition.x, maps.getData(phase).startTilePosition.y);
 
  		var actorY:Float = actor.y;
  		actor.y -= 500;
  		Actuate.tween(actor, 1, {  y: actorY }, false).delay(1).ease(Bounce.easeOut);
 		
-	
+		nextItem = 0;//reseta o contador
+		
 	}
 
+	private function goNextPhase() {
+		if (phase + 1 < maps.totalPhases()) {
+			phase++;
+			Actuate.tween(actor, 1.5, {  y: -500 }, false);
+			Actuate.tween(tileGrid, 0.5, {  alpha: 0 }, false).delay(1).onComplete(onStart);
+		}
+		
+	
+	}
 	public override function onRemove() {
 
 	}	
 
-	public override function updateMousePosition( aSX:Float, aSY:Float ) {
+	private function checkRule(tile:Tile) {
 
-		super.updateMousePosition( aSX, aSY );
-
-		var tile:Tile = engine.findTileByMousePosition(aSX , aSY);
-
-		if (tile != null && tile.type == Tile.TYPE_GROUND_TALL ) {
+		if (tile != null && maps.canJumpInTile(phase, tile.id) ) {
 
 			var diffY:Int = ((tile.type == Tile.TYPE_GROUND_TALL)?-80:-40);
 			
@@ -133,13 +138,47 @@ class GameNumbersScreen extends BaseScreen {
 			var midX:Float = actor.x + ( ( actor.x - tile.x  ) * -1);
 			var midY:Float = actor.y - 300;
 			var xPath:MotionPath = path.bezier (tile.x, tile.y + diffY , midX, midY);//.bezier (boy.x, boy.y , midX, midY);
-	    	
-	    	Actuate.motionPath (actor, 0.5, { x: xPath.x, y: xPath.y } ).ease(Quad.easeInOut);
+			
+			var animTime:Float = 0.5;
+			var target:flash.geom.Point = maps.getData(phase).targetTilePosition;
+			var phase_over:Bool = false;
 
-			//Actuate.tween(tile, 0.5, { y: (tile.y + 80) }, false).delay(0.5).ease(Quad.easeOut);
-			//tile.disabled = true;
-		
+			if (tile != null && (tile.id == GameNumbersMaps.NUMBER_CONTAINER || (tile.gridX == target.x && tile.gridY == target.y ) )  && nextItem <  maps.getData(phase).answers.length  )  {
+
+				if (tile.answerData != maps.getData(phase).answers[nextItem]) {
+					xPath.bezier (actor.x, actor.y , midX, midY);
+					animTime = 1;
+					Actuate.tween(tile, 0.5, { y: (tile.y + 80) }, false).delay(0.5).reverse().ease(Quad.easeOut);
+			
+				} else {
+					nextItem++;
+				}
+			}  else if (  (tile.gridX == target.x && tile.gridY == target.y )   && nextItem >=  maps.getData(phase).answers.length  ) {
+
+				Actuate.motionPath (actor, animTime, { x: xPath.x, y: xPath.y } ).ease(Quad.easeInOut).onComplete(goNextPhase);
+				phase_over = true;
+
+			} 
+
+
+			if (!phase_over) {
+
+				Actuate.motionPath (actor, animTime, { x: xPath.x, y: xPath.y } ).ease(Quad.easeInOut);
+
+			}	
+			
+	    	
 		}
+	}
+
+	public override function updateMousePosition( aSX:Float, aSY:Float ) {
+
+		super.updateMousePosition( aSX, aSY );
+
+		var tile:Tile = engine.findTileByMousePosition(aSX , aSY);
+
+		checkRule(tile);
+		
 
 	}	
 }

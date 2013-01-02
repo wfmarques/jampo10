@@ -18,7 +18,11 @@ import com.codevein.planetcute.engine.Entity;
 
 
 
-class GameController extends EventDispatcher {
+class GameController extends EventDispatcher {	
+
+	public inline static var DEFAULT_FONT:String = "assets/fonts/AgentOrange.ttf";
+	public inline static var ITEM_GAME_FONT:String = "assets/fonts/#44v2.ttf";
+
 
 	public inline static var SHOW_INTRO_SCREEN:String = "SHOW_INTRO_SCREEN";
 	public inline static var SHOW_GAME_NUMBERS_SCREEN:String = "SHOW_GAME_NUMBERS_SCREEN";
@@ -109,7 +113,7 @@ class GameController extends EventDispatcher {
 		return actor;
 	}
 
-	
+
 
 
 }

@@ -29,8 +29,7 @@ class IntroScreen extends BaseScreen {
 	private var tileGrid:Sprite;
 	private var gameTitle:TextField;
 	private var actor:Entity;
-	private inline static var DEFAULT_FONT:String = "assets/fonts/AgentOrange.ttf";
-
+	
 	
 
 	public function new () {
@@ -47,7 +46,7 @@ class IntroScreen extends BaseScreen {
 
 		actor = GameController.getInstance().getMainCharacter();
 
-		gameTitle = TextUtil.getInstance().createTextField(DEFAULT_FONT, "Jump & Learn", 72);
+		gameTitle = TextUtil.getInstance().createTextField(GameController.DEFAULT_FONT, "Jump & Learn", 72);
 
 		
 		var btdMap:Array<String> = new Array<String>();

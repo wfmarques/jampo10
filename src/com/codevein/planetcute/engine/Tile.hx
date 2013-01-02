@@ -9,6 +9,7 @@ class Tile  extends Entity {
 	public var id:Int;
 	public var gridX:Int;
 	public var gridY:Int;
+	public var answerData:Dynamic = null;
 
 	inline public static var TYPE_GROUND = 1;
 	inline public static var TYPE_GROUND_TALL = 2;
