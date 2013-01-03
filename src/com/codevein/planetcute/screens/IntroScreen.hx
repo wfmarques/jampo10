@@ -56,15 +56,17 @@ class IntroScreen extends BaseScreen {
 		btdMap[3] = "assets/imgs/Wall_Block_Tall.png";
 		btdMap[4] = "assets/imgs/Grass_Block.png";
 		btdMap[5] = "assets/imgs/Star.png";
+		btdMap[6] = "assets/imgs/Empty.png";
+		
 		
 				
 
 		var tileMap:Array<Array<Int>> = [
-			[ 4, 4, 4, 4, 4, 4, 4 ],
+			[ 6, 4, 4, 4, 4, 4, 6 ],
 			[ 4, 0, 0, 0, 0, 0, 4 ],
 			[ 4, 1, 0, 4, 0, 1, 4 ],
 			[ 4, 0, 0, 0, 0, 0, 4 ],
-			[ 4, 4, 4, 4, 4, 4, 4]
+			[ 6, 4, 4, 4, 4, 4, 6 ]
 		
 		];
 
@@ -94,7 +96,7 @@ class IntroScreen extends BaseScreen {
 
 	private function onCreateObject(tile:Tile) {
 		tile.alpha = 0;
-		Actuate.tween(tile, 1, { alpha:1} ).delay(2).ease(Quad.easeInOut);
+		Actuate.tween(tile, 4, { alpha:1} ).ease(Quad.easeInOut);
 
 	}
 
@@ -117,8 +119,11 @@ class IntroScreen extends BaseScreen {
 
 		addChild(tileGrid);
 
-		
- 		tileGrid.addChild(actor);
+
+		Actuate.tween(tileGrid, 0.5, {  alpha: 1 }, false);
+			
+
+		tileGrid.addChild(actor);
 		
  		engine.putObjectOverTile(actor, 3, 2);
 

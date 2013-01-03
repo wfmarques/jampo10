@@ -32,7 +32,7 @@ class TextUtil  {
 		var font:Font = Assets.getFont(fontPath);
 		var format:TextFormat = new TextFormat (font.fontName, fontSize, fontColor);
 		var textField:TextField = new TextField ();
-		textField.autoSize = native.text.TextFieldAutoSize.LEFT;
+		textField.autoSize = flash.text.TextFieldAutoSize.LEFT;
 		textField.multiline = true;
 		textField.defaultTextFormat = format;
 		textField.selectable = false;

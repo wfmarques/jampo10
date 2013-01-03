@@ -1,9 +1,7 @@
 package com.codevein.planetcute;
 
-
-
-import flash.display.BitmapData;
 import flash.display.Bitmap;
+import flash.display.BitmapData;
 import flash.display.Sprite;
 import flash.display.StageAlign;
 import flash.display.StageQuality;
@@ -25,7 +23,7 @@ class CuteMain extends Sprite {
 	
 	private var background:Bitmap; 
 	
-	public function new () {
+	public function new () { 
 		
 		super (); 
 		
@@ -49,11 +47,11 @@ class CuteMain extends Sprite {
 	private function construct ():Void {
 		
 		
-		
-		background = new Bitmap(Assets.getBitmapData ("assets/imgs/background.png"));
+		background = new Bitmap(Assets.getBitmapData ("assets/imgs/background.png"));	
 
 		addChild(background);
-
+			
+		
 		GameController.getInstance().setRootContainer(this);	
 		GameController.getInstance().initialize();
 	}
@@ -63,10 +61,18 @@ class CuteMain extends Sprite {
 	private function initialize ():Void {
 		
 		Lib.current.stage.align = StageAlign.TOP_LEFT;
-		Lib.current.stage.scaleMode = StageScaleMode.NO_SCALE;
+		Lib.current.stage.scaleMode = StageScaleMode.NO_BORDER;
 		Lib.current.stage.addEventListener (Event.ACTIVATE, stage_onActivate);
 		Lib.current.stage.addEventListener (Event.DEACTIVATE, stage_onDeactivate);
 		Lib.current.stage.addEventListener (MouseEvent.MOUSE_DOWN, stage_onClick);
+
+
+		/*#if ios
+		Lib.current.stage.setFixedOrientation( -1);
+		Lib.current.stage.shouldRotateInterface = function (orientation:Int):Bool {
+			return (orientation == Lib.current.stage.OrientationLandscapeLeft || orientation == Lib.current.stage.OrientationLandscapeRight);
+		}	
+		#end*/
 	
 	}
 	
@@ -102,11 +108,8 @@ class CuteMain extends Sprite {
 	
 	
 	// Entry point
-	
-	
-	
-	
-	public static function main () {
+
+public static function main () {
 		
 		Lib.current.addChild (new CuteMain ());
 		

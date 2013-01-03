@@ -33,6 +33,7 @@ class GameNumbersScreen extends BaseScreen {
 	private var engine:TileEngine;
 	private var tileGrid:Sprite;
 	private var lastTile:Tile;
+	private var lastClickTime:Float = 0;
 	private var gameTitle:TextField;
 	private var actor:Entity;
 	private var phase:Int = 0;
@@ -70,7 +71,7 @@ class GameNumbersScreen extends BaseScreen {
 			var value:String = maps.getData(phase).answers[nextItem++];
 			var numText:TextField = TextUtil.getInstance().createTextField(GameController.ITEM_GAME_FONT, value, 64, 0x000000);
 			numText.x = (tile.width - numText.width) * 0.5;
-			numText.y = (tile.height - numText.height) * 0.5;
+			numText.y = (tile.height - numText.height) * 0.1;
 			tile.answerData = value;
 			tile.addChild(numText);
 
@@ -92,7 +93,7 @@ class GameNumbersScreen extends BaseScreen {
 	public override function onStart() {
 
 		nextItem = 0;//reseta o contador
-		
+
 		tileGrid = engine.createGrid( maps.getAssetsList(), maps.getData(phase).tileMap , maps.getData(phase).objectMap , onCreateTile, onCreateObject );
 		
 		tileGrid.alpha = 1;
@@ -105,13 +106,15 @@ class GameNumbersScreen extends BaseScreen {
 		
  		tileGrid.addChild(actor);
 		
- 		engine.putObjectOverTile(actor, maps.getData(phase).startTilePosition.x, maps.getData(phase).startTilePosition.y);
+ 		lastTile = engine.putObjectOverTile(actor, maps.getData(phase).startTilePosition.x, maps.getData(phase).startTilePosition.y);
 
  		var actorY:Float = actor.y;
  		actor.y -= 500;
  		Actuate.tween(actor, 1, {  y: actorY }, false).delay(1).ease(Bounce.easeOut);
 		
+
 		nextItem = 0;//reseta o contador
+
 		
 	}
 
@@ -120,17 +123,33 @@ class GameNumbersScreen extends BaseScreen {
 			phase++;
 			Actuate.tween(actor, 1.5, {  y: -500 }, false);
 			Actuate.tween(tileGrid, 0.5, {  alpha: 0 }, false).delay(1).onComplete(onStart);
+		} else {
+
+			Actuate.tween(actor, 1.5, {  y: -500 }, false);
+			Actuate.tween(tileGrid, 0.5, {  alpha: 0 }, false).delay(1).onComplete(removeAnimationComplete);
+
 		}
 		
 	
 	}
+
+	private function removeAnimationComplete() {
+
+		GameController.getInstance().dispatchEvent(new flash.events.Event(GameController.SHOW_INTRO_SCREEN));
+		phase = 0;
+		
+
+	}
+
 	public override function onRemove() {
 
 	}	
 
 	private function checkRule(tile:Tile) {
 
-		if (tile != null && maps.canJumpInTile(phase, tile.id) ) {
+
+		if (tile != null   && maps.canJumpInTile(phase, tile.id) ) {
+
 
 			var diffY:Int = ((tile.type == Tile.TYPE_GROUND_TALL)?-80:-40);
 			
@@ -143,41 +162,51 @@ class GameNumbersScreen extends BaseScreen {
 			var target:flash.geom.Point = maps.getData(phase).targetTilePosition;
 			var phase_over:Bool = false;
 
-			if (tile != null && (tile.id == GameNumbersMaps.NUMBER_CONTAINER || (tile.gridX == target.x && tile.gridY == target.y ) )  && nextItem <  maps.getData(phase).answers.length  )  {
+			if (tile != null  && (tile.id == GameNumbersMaps.NUMBER_CONTAINER || (tile.gridX == target.x && tile.gridY == target.y ) )  && nextItem <  maps.getData(phase).answers.length  )  {
 
 				if (tile.answerData != maps.getData(phase).answers[nextItem]) {
-					xPath.bezier (actor.x, actor.y , midX, midY);
+
+					xPath.bezier (lastTile.x, lastTile.y + diffY , midX, midY);
+					
 					animTime = 1;
-					Actuate.tween(tile, 0.5, { y: (tile.y + 80) }, false).delay(0.5).reverse().ease(Quad.easeOut);
+					Actuate.tween(tile, 0.5, { y: (tile.originY + 80) }, false).delay(0.5).reverse().ease(Quad.easeOut);
 			
 				} else {
 					nextItem++;
+					lastTile = tile;
 				}
 			}  else if (  (tile.gridX == target.x && tile.gridY == target.y )   && nextItem >=  maps.getData(phase).answers.length  ) {
-
+				tileGrid.addChild(actor);
 				Actuate.motionPath (actor, animTime, { x: xPath.x, y: xPath.y } ).ease(Quad.easeInOut).onComplete(goNextPhase);
 				phase_over = true;
+
 
 			} 
 
 
 			if (!phase_over) {
-
+				tileGrid.addChild(actor);
 				Actuate.motionPath (actor, animTime, { x: xPath.x, y: xPath.y } ).ease(Quad.easeInOut);
 
 			}	
 			
+			
 	    	
 		}
+
+	
 	}
 
 	public override function updateMousePosition( aSX:Float, aSY:Float ) {
 
 		super.updateMousePosition( aSX, aSY );
+		var now :Float = Date.now().getTime();
 
 		var tile:Tile = engine.findTileByMousePosition(aSX , aSY);
 
 		checkRule(tile);
+
+		lastClickTime =  Date.now().getTime();
 		
 
 	}	

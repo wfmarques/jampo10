@@ -11,6 +11,9 @@ class Entity extends Sprite {
 
 	private var bitmap:Bitmap;
 	public  var disabled:Bool;
+	public var originX:Float;
+	public var originY:Float;
+	
 	
 	public function new (aBtData:BitmapData) {
 		

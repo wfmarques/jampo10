@@ -27,8 +27,8 @@ class GameController extends EventDispatcher {
 	public inline static var SHOW_INTRO_SCREEN:String = "SHOW_INTRO_SCREEN";
 	public inline static var SHOW_GAME_NUMBERS_SCREEN:String = "SHOW_GAME_NUMBERS_SCREEN";
 
-	public inline static var SCREEN_WIDTH:Float = 1024;
-	public inline static var SCREEN_HEIGHT:Float = 768;
+	public  static var SCREEN_WIDTH:Float = 1024;
+	public  static var SCREEN_HEIGHT:Float = 768;
 		
 
 	private static var _instance:GameController = null;
@@ -65,6 +65,8 @@ class GameController extends EventDispatcher {
 		currentScreen.onStart();
 
 		addEventListener(SHOW_GAME_NUMBERS_SCREEN, goToGameNumberScreen);
+		addEventListener(SHOW_INTRO_SCREEN, goToIntroScreen);
+
 
 	}
 
@@ -78,6 +80,10 @@ class GameController extends EventDispatcher {
 	}
 	public function goToGameNumberScreen(evt:Event) {
 		gotToScreen(SHOW_GAME_NUMBERS_SCREEN);
+	}
+
+	public function goToIntroScreen(evt:Event) {
+		gotToScreen(SHOW_INTRO_SCREEN);
 	}
 
 

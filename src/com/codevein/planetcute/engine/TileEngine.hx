@@ -101,6 +101,8 @@ class TileEngine  {
 					tile = new Tile(imageList[tileId], tileId, tileType, j, i);
 					tile.x = tile.width * j;
 					tile.y = (TileEngine.tileYOffset * i) - marginYOffset;
+					tile.originX = tile.x;
+					tile.originY = tile.y;
 					tile.name = "tile_"+i+"_"+j;
 
 					grid.addChild(tile);
@@ -137,6 +139,8 @@ class TileEngine  {
 						tile = new Tile(imageList[tileId], tileId, Tile.TYPE_OBJECT, j, i);
 						tile.x = tile.width * j;
 						tile.y = (TileEngine.tileYOffset * i) - ((tileType  == Tile.TYPE_GROUND_TALL)?80:40) - marginYOffset ;
+						tile.originX = tile.x;
+						tile.originY = tile.y;
 						tile.name = "obj_"+i+"_"+j;
 
 						grid.addChild(tile);
@@ -170,7 +174,7 @@ class TileEngine  {
 
 	}
 
-	public function putObjectOverTile(ent:Entity, posX:Float, posY:Float) {
+	public function putObjectOverTile(ent:Entity, posX:Float, posY:Float):Tile {
 
 		var tile:Tile = cast(grid.getChildByName( "tile_"+posY+"_"+posX ), Tile);
 
@@ -193,6 +197,8 @@ class TileEngine  {
 			}
 		
 		}
+
+		return tile;
 
 	}
 

@@ -6,7 +6,7 @@
   <ios deployment="5.0" binaries="fat" devices="universal" compiler="gcc" />
 
 
-  <window width="1024" height="768" fps="30" orientation="landscape" resizable="false" unless="target_mac"  />
+  <window width="1024" height="768" fps="30" orientation="landscape" resizable="true" background="0x000000" unless="target_mac"    />
   <set name="BUILD_DIR" value="out" />
 
   <classpath name="src" />
