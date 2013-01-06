@@ -16,7 +16,9 @@ import com.codevein.planetcute.engine.Tile;
 import com.codevein.planetcute.engine.TileEngine;
 import com.codevein.planetcute.engine.Entity;
 
-
+import flash.media.SoundChannel;
+import flash.media.Sound;
+import flash.media.SoundTransform;
 
 class GameController extends EventDispatcher {	
 
@@ -37,6 +39,12 @@ class GameController extends EventDispatcher {
 	private var screens:Hash<BaseScreen> = null;
 	public var currentScreen:BaseScreen = null;
 	public var actor:Entity = null;
+
+	private var backMusic:SoundChannel;
+	private var jumpSound:Sound;
+	private var jumpSound2:Sound;
+	private var failSound:Sound;
+	
 	
 
 	public function new () {
@@ -119,6 +127,86 @@ class GameController extends EventDispatcher {
 		return actor;
 	}
 
+	private function sound_onComplete(evt:Event) {
+
+	}
+
+	public function playBackgroudMusic() {
+
+		if (backMusic == null) {
+			var newTransform = new SoundTransform(0.5,0);
+			backMusic = Assets.getSound ("assets/music/mushroom_dance_0.mp3").play(0,10000,newTransform);
+			//backMusic.addEventListener (Event.COMPLETE, "sound_onComplete");
+		}
+	}
+
+	public function stopBackgroudMusic() {
+		
+		backMusic.stop();
+	}
+
+
+	public function playJumpSound() {
+
+		if (jumpSound == null) {
+			
+			jumpSound = Assets.getSound ("assets/sounds/qubodup-cfork-ccby3-jump.wav");
+			
+		} 
+
+		var newTransform = new SoundTransform(0.1,0);	
+		var soundChannel = jumpSound.play(0,0,newTransform);
+		
+	}
+
+
+	public function playJumpSound2() {
+
+		if (jumpSound2 == null) {
+			
+			jumpSound2 = Assets.getSound ("assets/sounds/apricotjumpbounce-jump.wav");
+			
+		} 
+
+		var newTransform = new SoundTransform(0.1,0);	
+		var soundChannel = jumpSound2.play(0,0,newTransform);
+		
+	}
+
+	public function playFailSound() {
+
+		if (failSound == null) {
+			
+			failSound = Assets.getSound ("assets/sounds/fail.wav");
+			
+		} 
+
+		var newTransform = new SoundTransform(0.4,0);	
+		var soundChannel = failSound.play(0,0,newTransform);
+		
+	}
+
+
+	public function playNumberSound(number:String) {
+
+			
+		var nSound = Assets.getSound ("assets/sounds/_"+number+"_pt.wav");
+		var newTransform = new SoundTransform(0.8,0);	
+		var soundChannel = nSound.play(0,0,newTransform);
+		
+	}
+
+
+	public function playClapSound() {
+			
+		var nSound = Assets.getSound ("assets/sounds/clap.wav");
+		var newTransform = new SoundTransform(0.8,0);	
+		var soundChannel = nSound.play(0,0,newTransform);
+		
+	}
+	
+
+	
 
 
 

@@ -38,7 +38,8 @@ class GameNumbersScreen extends BaseScreen {
 	private var actor:Entity;
 	private var phase:Int = 0;
 	private var nextItem:Int = 0;
-
+	private var numbersLabel:TextField;
+	
 	private var btdMap:Array<String> ;
 
 	public function new () {
@@ -57,6 +58,9 @@ class GameNumbersScreen extends BaseScreen {
 
 		maps = new GameNumbersMaps();
 
+		numbersLabel = TextUtil.getInstance().createTextField(GameController.DEFAULT_FONT, "");
+		numbersLabel.width = GameController.SCREEN_WIDTH  ;
+		numbersLabel.x = 30;
 	}
 
 	private function onCreateTile(tile:Tile) {
@@ -92,6 +96,8 @@ class GameNumbersScreen extends BaseScreen {
 	
 	public override function onStart() {
 
+		numbersLabel.text = "";
+		
 		nextItem = 0;//reseta o contador
 
 		tileGrid = engine.createGrid( maps.getAssetsList(), maps.getData(phase).tileMap , maps.getData(phase).objectMap , onCreateTile, onCreateObject );
@@ -103,6 +109,9 @@ class GameNumbersScreen extends BaseScreen {
 
 		addChild(tileGrid);
 
+
+		numbersLabel.y = (tileGrid.y + tileGrid.height + 20);
+		addChild(numbersLabel);
 		
  		tileGrid.addChild(actor);
 		
@@ -111,7 +120,7 @@ class GameNumbersScreen extends BaseScreen {
  		var actorY:Float = actor.y;
  		actor.y -= 500;
  		Actuate.tween(actor, 1, {  y: actorY }, false).delay(1).ease(Bounce.easeOut);
-		
+		Actuate.timer (1.5).onComplete (GameController.getInstance().playJumpSound);
 
 		nextItem = 0;//reseta o contador
 
@@ -119,16 +128,28 @@ class GameNumbersScreen extends BaseScreen {
 	}
 
 	private function goNextPhase() {
+
+		var target:flash.geom.Point = maps.getData(phase).targetTilePosition;
+		var star:Tile = engine.findObjectByGridPosition(target.x, target.y);
+		star.visible = false;	
+		
 		if (phase + 1 < maps.totalPhases()) {
+			
 			phase++;
 			Actuate.tween(actor, 1.5, {  y: -500 }, false);
 			Actuate.tween(tileGrid, 0.5, {  alpha: 0 }, false).delay(1).onComplete(onStart);
-		} else {
 
+		} else {
+			
+			GameController.getInstance().playClapSound();
+		
+		
 			Actuate.tween(actor, 1.5, {  y: -500 }, false);
 			Actuate.tween(tileGrid, 0.5, {  alpha: 0 }, false).delay(1).onComplete(removeAnimationComplete);
 
 		}
+
+		GameController.getInstance().playJumpSound2();
 		
 	
 	}
@@ -138,7 +159,6 @@ class GameNumbersScreen extends BaseScreen {
 		GameController.getInstance().dispatchEvent(new flash.events.Event(GameController.SHOW_INTRO_SCREEN));
 		phase = 0;
 		
-
 	}
 
 	public override function onRemove() {
@@ -147,7 +167,7 @@ class GameNumbersScreen extends BaseScreen {
 
 	private function checkRule(tile:Tile) {
 
-
+		var fail:Bool = false;
 		if (tile != null   && maps.canJumpInTile(phase, tile.id) ) {
 
 
@@ -169,14 +189,23 @@ class GameNumbersScreen extends BaseScreen {
 					xPath.bezier (lastTile.x, lastTile.y + diffY , midX, midY);
 					
 					animTime = 1;
-					Actuate.tween(tile, 0.5, { y: (tile.originY + 80) }, false).delay(0.5).reverse().ease(Quad.easeOut);
-			
+					Actuate.stop(tile);
+					tile.y = tile.originY;
+					Actuate.tween(tile, 0.5, { y: (tile.originY + 80) }, true).delay(0.5).reverse().ease(Quad.easeOut);
+					Actuate.timer (0.5).onComplete (GameController.getInstance().playFailSound);
+					fail= true;
+					
 				} else {
 					nextItem++;
 					lastTile = tile;
+					Actuate.timer (0.5).onComplete (GameController.getInstance().playNumberSound, [tile.answerData]);
+					numbersLabel.text += " "+tile.answerData;
+			
 				}
 			}  else if (  (tile.gridX == target.x && tile.gridY == target.y )   && nextItem >=  maps.getData(phase).answers.length  ) {
+
 				tileGrid.addChild(actor);
+				Actuate.stop(actor);
 				Actuate.motionPath (actor, animTime, { x: xPath.x, y: xPath.y } ).ease(Quad.easeInOut).onComplete(goNextPhase);
 				phase_over = true;
 
@@ -187,10 +216,11 @@ class GameNumbersScreen extends BaseScreen {
 			if (!phase_over) {
 				tileGrid.addChild(actor);
 				Actuate.motionPath (actor, animTime, { x: xPath.x, y: xPath.y } ).ease(Quad.easeInOut);
-
+			
+			
 			}	
 			
-			
+			GameController.getInstance().playJumpSound();
 	    	
 		}
 
@@ -199,15 +229,15 @@ class GameNumbersScreen extends BaseScreen {
 
 	public override function updateMousePosition( aSX:Float, aSY:Float ) {
 
-		super.updateMousePosition( aSX, aSY );
 		var now :Float = Date.now().getTime();
 
-		var tile:Tile = engine.findTileByMousePosition(aSX , aSY);
-
-		checkRule(tile);
-
-		lastClickTime =  Date.now().getTime();
+		super.updateMousePosition( aSX, aSY );
 		
+		var tile:Tile = engine.findTileByMousePosition(aSX , aSY);
+		
+			checkRule(tile);
+			lastClickTime =  now;
+				
 
 	}	
 }

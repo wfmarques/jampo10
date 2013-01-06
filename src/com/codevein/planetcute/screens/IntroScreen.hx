@@ -29,7 +29,7 @@ class IntroScreen extends BaseScreen {
 	private var tileGrid:Sprite;
 	private var gameTitle:TextField;
 	private var actor:Entity;
-	
+	private var titleWidth:Float;
 	
 
 	public function new () {
@@ -46,7 +46,8 @@ class IntroScreen extends BaseScreen {
 
 		actor = GameController.getInstance().getMainCharacter();
 
-		gameTitle = TextUtil.getInstance().createTextField(GameController.DEFAULT_FONT, "Jump & Learn", 72);
+		gameTitle = TextUtil.getInstance().createTextField(GameController.DEFAULT_FONT, "Jump & Learn\n.                  .", 72);
+		titleWidth = gameTitle.width;
 
 		
 		var btdMap:Array<String> = new Array<String>();
@@ -104,7 +105,7 @@ class IntroScreen extends BaseScreen {
 	public override function onStart() {
 
 		gameTitle.y = 20;
- 		gameTitle.x = ((GameController.SCREEN_WIDTH - gameTitle.width) * 0.5);
+ 		gameTitle.x = ((GameController.SCREEN_WIDTH - titleWidth) * 0.5);
  		gameTitle.alpha = 0;
 
  		Actuate.tween(gameTitle, 1, {  alpha: 1 }, false).delay(1);
@@ -119,10 +120,9 @@ class IntroScreen extends BaseScreen {
 
 		addChild(tileGrid);
 
-
+		tileGrid.visible = true;
 		Actuate.tween(tileGrid, 0.5, {  alpha: 1 }, false);
-			
-
+		
 		tileGrid.addChild(actor);
 		
  		engine.putObjectOverTile(actor, 3, 2);
@@ -130,7 +130,7 @@ class IntroScreen extends BaseScreen {
  		var actorY:Float = actor.y;
  		actor.y -= 500;
  		Actuate.tween(actor, 1, {  y: actorY }, false).delay(1).ease(Bounce.easeOut);
-		
+		Actuate.timer (1.5).onComplete (GameController.getInstance().playJumpSound);
 
 	}
 
@@ -150,6 +150,7 @@ class IntroScreen extends BaseScreen {
 		Actuate.tween(actor, 1.5, {  y: -500 }, false);
 		Actuate.tween(tileGrid, 0.5, {  alpha: 0 }, false).delay(1);
 		Actuate.tween(gameTitle, 1, {  y: -300 }, false).delay(1).onComplete(removeAnimationComplete);
+		GameController.getInstance().playJumpSound2();
 
 	}
 
@@ -169,6 +170,7 @@ class IntroScreen extends BaseScreen {
 			var xPath:MotionPath = path.bezier (tile.x, tile.y + diffY , midX, midY);//.bezier (boy.x, boy.y , midX, midY);
 	    	
 	    	Actuate.motionPath (actor, 0.5, { x: xPath.x, y: xPath.y } ).ease(Quad.easeInOut).onComplete(goNumbersGame);
+	    	GameController.getInstance().playJumpSound();
 
 			//Actuate.tween(tile, 0.5, { y: (tile.y + 80) }, false).delay(0.5).ease(Quad.easeOut);
 			//tile.disabled = true;

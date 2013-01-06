@@ -14,8 +14,10 @@
   <haxelib name="nme" />
   <haxelib name="actuate" />
 
-  <assets path="assets" rename="assets" include="*" />
-
+  <assets path="assets/imgs" rename="assets/imgs" include="*" />
+  <assets path="assets/fonts" rename="assets/fonts" include="*" />
+  <assets path="assets/music" rename="assets/music" type="music" include="*" />
+  <assets path="assets/sounds" rename="assets/sounds" type="sound" include="*" />
 <!--
   <ndll name="std" />
   <ndll name="regexp" />
