@@ -60,6 +60,7 @@ class GameNumbersScreen extends BaseScreen {
 
 		numbersLabel = TextUtil.getInstance().createTextField(GameController.DEFAULT_FONT, "");
 		numbersLabel.width = GameController.SCREEN_WIDTH  ;
+		numbersLabel.height += 30;
 		numbersLabel.x = 30;
 	}
 
@@ -110,7 +111,7 @@ class GameNumbersScreen extends BaseScreen {
 		addChild(tileGrid);
 
 
-		numbersLabel.y = (tileGrid.y + tileGrid.height + 20);
+		numbersLabel.y = (tileGrid.y + tileGrid.height - 20);
 		addChild(numbersLabel);
 		
  		tileGrid.addChild(actor);

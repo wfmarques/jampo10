@@ -46,7 +46,7 @@ class IntroScreen extends BaseScreen {
 
 		actor = GameController.getInstance().getMainCharacter();
 
-		gameTitle = TextUtil.getInstance().createTextField(GameController.DEFAULT_FONT, "Jump & Learn\n.                  .", 72);
+		gameTitle = TextUtil.getInstance().createTextField(GameController.DEFAULT_FONT, "Jump & Learn", 72);
 		titleWidth = gameTitle.width;
 
 		
