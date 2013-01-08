@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
 
-  <app title="Actuate Example" file="CuteMain" main="com.codevein.planetcute.CuteMain" package="com.codevein.planetcute" version="1.0.0" icon="assets/icon.png" company="NME" />
+  <app title="Jump and Learn" file="JumpLearn" main="com.codevein.planetcute.CuteMain" package="com.codevein.jumpandlearn" version="1.0.0" icon="assets/icon.png" company="WM Games" />
   
   <ios deployment="5.0" binaries="fat" devices="universal" compiler="gcc" />
 
-
-  <window width="1024" height="768" fps="30" orientation="landscape" resizable="true" background="0x000000" unless="target_mac"    />
+ 
+  <window width="1024" height="768" fps="30" orientation="landscape" resizable="true" background="0x000000"    />
   <set name="BUILD_DIR" value="out" />
 
   <classpath name="src" />
@@ -18,12 +18,12 @@
   <assets path="assets/fonts" rename="assets/fonts" include="*" />
   <assets path="assets/music" rename="assets/music" type="music" include="*" />
   <assets path="assets/sounds" rename="assets/sounds" type="sound" include="*" />
-<!--
+  
+<!--ANDROID-->
   <ndll name="std" />
   <ndll name="regexp" />
   <ndll name="zlib" />
   <ndll name="nme" haxelib="nme" />
-  -->
 
 
 </project>

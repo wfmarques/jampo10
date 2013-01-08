@@ -54,7 +54,7 @@ class CuteMain extends Sprite {
 		
 		GameController.getInstance().setRootContainer(this);	
 		GameController.getInstance().initialize();
-		GameController.getInstance().playBackgroudMusic();
+		Actuate.timer (1.0).onComplete (GameController.getInstance().playBackgroudMusic);
 	}
 	
 	

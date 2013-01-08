@@ -22,6 +22,27 @@ import flash.media.SoundTransform;
 
 class GameController extends EventDispatcher {	
 
+	
+	public inline static var AUDIO_BACKGROUND:Int = 0;
+	public inline static var AUDIO_N_1:Int    = 1;
+	public inline static var AUDIO_N_2:Int    = 2;
+	public inline static var AUDIO_N_3:Int    = 3;
+	public inline static var AUDIO_N_4:Int    = 4;
+	public inline static var AUDIO_N_5:Int    = 5;
+	public inline static var AUDIO_N_6:Int    = 6;
+	public inline static var AUDIO_N_7:Int    = 7;
+	public inline static var AUDIO_N_8:Int    = 8;
+	public inline static var AUDIO_N_9:Int    = 9;
+	public inline static var AUDIO_N_10:Int   = 10;
+
+	public inline static var AUDIO_JUMP_1:Int  = 11;
+	public inline static var AUDIO_JUMP_2:Int  = 12;
+	public inline static var AUDIO_FAIL:Int    = 13;
+	public inline static var AUDIO_CLAP:Int    = 14;
+
+
+
+
 	public inline static var DEFAULT_FONT:String = "assets/fonts/AgentOrange.ttf";
 	public inline static var ITEM_GAME_FONT:String = "assets/fonts/#44v2.ttf";
 
@@ -40,10 +61,7 @@ class GameController extends EventDispatcher {
 	public var currentScreen:BaseScreen = null;
 	public var actor:Entity = null;
 
-	private var backMusic:SoundChannel;
-	private var jumpSound:Sound;
-	private var jumpSound2:Sound;
-	private var failSound:Sound;
+	private var soundCache:Array<Sound> ;
 	
 	
 
@@ -75,6 +93,8 @@ class GameController extends EventDispatcher {
 		addEventListener(SHOW_GAME_NUMBERS_SCREEN, goToGameNumberScreen);
 		addEventListener(SHOW_INTRO_SCREEN, goToIntroScreen);
 
+
+		cacheSound();
 
 	}
 
@@ -127,82 +147,73 @@ class GameController extends EventDispatcher {
 		return actor;
 	}
 
+	private  function cacheSound() {
+
+
+		soundCache = new Array<Sound>();
+
+		soundCache[AUDIO_BACKGROUND] = Assets.getSound ("assets/music/mushroom_dance_0.mp3");
+
+		for (i in 0...10) {
+			soundCache[i+1] = Assets.getSound ("assets/sounds/_"+ (i+1) +"_pt.wav");
+		}
+		soundCache[AUDIO_JUMP_1]  = Assets.getSound ("assets/sounds/qubodup-cfork-ccby3-jump.wav");
+		soundCache[AUDIO_JUMP_2]  = Assets.getSound ("assets/sounds/apricotjumpbounce-jump.wav");
+		soundCache[AUDIO_FAIL]    = Assets.getSound ("assets/sounds/fail.wav");
+		soundCache[AUDIO_CLAP]    = Assets.getSound ("assets/sounds/clap.wav");
+			
+	}
+
 	private function sound_onComplete(evt:Event) {
 
 	}
 
 	public function playBackgroudMusic() {
 
-		if (backMusic == null) {
-			var newTransform = new SoundTransform(0.5,0);
-			backMusic = Assets.getSound ("assets/music/mushroom_dance_0.mp3").play(0,10000,newTransform);
-			//backMusic.addEventListener (Event.COMPLETE, "sound_onComplete");
-		}
+		var newTransform = new SoundTransform(0.5,0);
+		soundCache[AUDIO_BACKGROUND].play(0,10000,newTransform);
 	}
 
-	public function stopBackgroudMusic() {
-		
-		backMusic.stop();
-	}
-
+	
 
 	public function playJumpSound() {
 
-		if (jumpSound == null) {
 			
-			jumpSound = Assets.getSound ("assets/sounds/qubodup-cfork-ccby3-jump.wav");
-			
-		} 
-
 		var newTransform = new SoundTransform(0.1,0);	
-		var soundChannel = jumpSound.play(0,0,newTransform);
-		
+		soundCache[AUDIO_JUMP_1].play(0,0,newTransform);
+	
 	}
 
 
 	public function playJumpSound2() {
-
-		if (jumpSound2 == null) {
-			
-			jumpSound2 = Assets.getSound ("assets/sounds/apricotjumpbounce-jump.wav");
-			
-		} 
-
-		var newTransform = new SoundTransform(0.1,0);	
-		var soundChannel = jumpSound2.play(0,0,newTransform);
 		
+		var newTransform = new SoundTransform(0.1,0);	
+		soundCache[AUDIO_JUMP_2].play(0,0,newTransform);
+
 	}
 
 	public function playFailSound() {
-
-		if (failSound == null) {
-			
-			failSound = Assets.getSound ("assets/sounds/fail.wav");
-			
-		} 
-
-		var newTransform = new SoundTransform(0.4,0);	
-		var soundChannel = failSound.play(0,0,newTransform);
 		
+		var newTransform = new SoundTransform(0.4,0);	
+		soundCache[AUDIO_FAIL].play(0,0,newTransform);
+
 	}
 
 
 	public function playNumberSound(number:String) {
 
-			
-		var nSound = Assets.getSound ("assets/sounds/_"+number+"_pt.wav");
 		var newTransform = new SoundTransform(0.8,0);	
-		var soundChannel = nSound.play(0,0,newTransform);
-		
+		var idx:Int = Std.parseInt(number);
+		soundCache[idx].play(0,0,newTransform);
+
 	}
 
 
 	public function playClapSound() {
 			
-		var nSound = Assets.getSound ("assets/sounds/clap.wav");
 		var newTransform = new SoundTransform(0.8,0);	
-		var soundChannel = nSound.play(0,0,newTransform);
-		
+		soundCache[AUDIO_CLAP].play(0,0,newTransform);
+
 	}
 	
 

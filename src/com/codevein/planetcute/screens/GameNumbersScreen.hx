@@ -106,12 +106,12 @@ class GameNumbersScreen extends BaseScreen {
 		tileGrid.alpha = 1;
 
 		tileGrid.x = ((GameController.SCREEN_WIDTH - tileGrid.width) * 0.5);
-		tileGrid.y = ((GameController.SCREEN_HEIGHT - tileGrid.height) * 0.5);
+		tileGrid.y = ((GameController.SCREEN_HEIGHT - tileGrid.height) * 0.5) - 10;
 
 		addChild(tileGrid);
 
 
-		numbersLabel.y = (tileGrid.y + tileGrid.height - 20);
+		numbersLabel.y = GameController.SCREEN_HEIGHT - 195;
 		addChild(numbersLabel);
 		
  		tileGrid.addChild(actor);
