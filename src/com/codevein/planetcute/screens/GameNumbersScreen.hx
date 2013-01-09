@@ -23,6 +23,8 @@ import com.codevein.planetcute.GameController;
 import com.codevein.planetcute.engine.GameMap;
 import com.codevein.planetcute.GameNumbersMaps;
 
+import flash.filters.GlowFilter;
+
 
 
 
@@ -38,8 +40,7 @@ class GameNumbersScreen extends BaseScreen {
 	private var actor:Entity;
 	private var phase:Int = 0;
 	private var nextItem:Int = 0;
-	private var numbersLabel:TextField;
-	
+	private var canJump:Bool = true;
 	private var btdMap:Array<String> ;
 
 	public function new () {
@@ -58,10 +59,7 @@ class GameNumbersScreen extends BaseScreen {
 
 		maps = new GameNumbersMaps();
 
-		numbersLabel = TextUtil.getInstance().createTextField(GameController.DEFAULT_FONT, "");
-		numbersLabel.width = GameController.SCREEN_WIDTH  ;
-		numbersLabel.height += 30;
-		numbersLabel.x = 30;
+		
 	}
 
 	private function onCreateTile(tile:Tile) {
@@ -74,12 +72,12 @@ class GameNumbersScreen extends BaseScreen {
 			Actuate.tween(tile, 0.5 * Math.random(), { alpha:1, y: posY } ).ease(Quad.easeInOut);
 		} else if (tile.numChildren == 1) {
 			var value:String = maps.getData(phase).answers[nextItem++];
-			var numText:TextField = TextUtil.getInstance().createTextField(GameController.ITEM_GAME_FONT, value, 64, 0x000000);
+			var numText:TextField = TextUtil.getInstance().createTextField(GameController.ITEM_GAME_FONT, value, 64, 0x000033);
 			numText.x = (tile.width - numText.width) * 0.5;
 			numText.y = (tile.height - numText.height) * 0.1;
 			tile.answerData = value;
 			tile.addChild(numText);
-
+			
 		}
 	}
 
@@ -90,6 +88,8 @@ class GameNumbersScreen extends BaseScreen {
 		if (  tile.gridX == target.x && tile.gridY == target.y ) {
 			tile.alpha = 0;
 			Actuate.tween(tile, 1, { alpha:1} ).delay(1).ease(Quad.easeInOut);
+			Actuate.tween(tile, 2, { y:tile.originY-20} ).ease(Quad.easeInOut).repeat().reflect();
+
 		}
 		
 		
@@ -97,7 +97,7 @@ class GameNumbersScreen extends BaseScreen {
 	
 	public override function onStart() {
 
-		numbersLabel.text = "";
+		Actuate.reset();
 		
 		nextItem = 0;//reseta o contador
 
@@ -106,13 +106,11 @@ class GameNumbersScreen extends BaseScreen {
 		tileGrid.alpha = 1;
 
 		tileGrid.x = ((GameController.SCREEN_WIDTH - tileGrid.width) * 0.5);
-		tileGrid.y = ((GameController.SCREEN_HEIGHT - tileGrid.height) * 0.5) - 10;
+		tileGrid.y = ((GameController.SCREEN_HEIGHT - tileGrid.height) * 0.55) ;
 
 		addChild(tileGrid);
 
 
-		numbersLabel.y = GameController.SCREEN_HEIGHT - 195;
-		addChild(numbersLabel);
 		
  		tileGrid.addChild(actor);
 		
@@ -159,6 +157,7 @@ class GameNumbersScreen extends BaseScreen {
 
 		GameController.getInstance().dispatchEvent(new flash.events.Event(GameController.SHOW_INTRO_SCREEN));
 		phase = 0;
+		canJump = true;
 		
 	}
 
@@ -169,17 +168,17 @@ class GameNumbersScreen extends BaseScreen {
 	private function checkRule(tile:Tile) {
 
 		var fail:Bool = false;
-		if (tile != null   && maps.canJumpInTile(phase, tile.id) ) {
+		if ( tile != null  && maps.canJumpInTile(phase, tile.id) && canJump ) {
 
 
 			var diffY:Int = ((tile.type == Tile.TYPE_GROUND_TALL)?-80:-40);
 			
 			var path:MotionPath = new MotionPath();
-			var midX:Float = actor.x + ( ( actor.x - tile.x  ) * -1);
-			var midY:Float = actor.y - 300;
+			var midX:Float = ( (actor.x + tile.x) * 0.5 );
+			var midY:Float = ( (actor.y + tile.y) * 0.5 ) - 320;
 			var xPath:MotionPath = path.bezier (tile.x, tile.y + diffY , midX, midY);//.bezier (boy.x, boy.y , midX, midY);
 			
-			var animTime:Float = 0.5;
+			var animTime:Float = 0.4;
 			var target:flash.geom.Point = maps.getData(phase).targetTilePosition;
 			var phase_over:Bool = false;
 
@@ -199,9 +198,12 @@ class GameNumbersScreen extends BaseScreen {
 				} else {
 					nextItem++;
 					lastTile = tile;
+					Actuate.timer (0.5).onComplete (function (obj) {
+						var glow:GlowFilter = new GlowFilter(0xFF9933, 1, 10, 10, 10);
+		    			obj.filters = [glow];
+		    		},[tile.getChildAt(1)]);
 					Actuate.timer (0.5).onComplete (GameController.getInstance().playNumberSound, [tile.answerData]);
-					numbersLabel.text += " "+tile.answerData;
-			
+					
 				}
 			}  else if (  (tile.gridX == target.x && tile.gridY == target.y )   && nextItem >=  maps.getData(phase).answers.length  ) {
 
@@ -215,9 +217,9 @@ class GameNumbersScreen extends BaseScreen {
 
 
 			if (!phase_over) {
+				canJump = false;
 				tileGrid.addChild(actor);
-				Actuate.motionPath (actor, animTime, { x: xPath.x, y: xPath.y } ).ease(Quad.easeInOut);
-			
+				Actuate.motionPath (actor, animTime, { x: xPath.x, y: xPath.y } ).ease(Quad.easeInOut).onComplete(function(){canJump=true;});
 			
 			}	
 			
@@ -236,8 +238,8 @@ class GameNumbersScreen extends BaseScreen {
 		
 		var tile:Tile = engine.findTileByMousePosition(aSX , aSY);
 		
-			checkRule(tile);
-			lastClickTime =  now;
+		checkRule(tile);
+		lastClickTime =  now;
 				
 
 	}	

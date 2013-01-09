@@ -30,7 +30,7 @@ class IntroScreen extends BaseScreen {
 	private var gameTitle:TextField;
 	private var actor:Entity;
 	private var titleWidth:Float;
-	
+	private var lastTile:Tile;
 
 	public function new () {
 		
@@ -65,18 +65,18 @@ class IntroScreen extends BaseScreen {
 		var tileMap:Array<Array<Int>> = [
 			[ 6, 4, 4, 4, 4, 4, 6 ],
 			[ 4, 0, 0, 0, 0, 0, 4 ],
-			[ 4, 1, 0, 4, 0, 1, 4 ],
+			[ 4, 0, 0, 4, 0, 0, 4 ],
 			[ 4, 0, 0, 0, 0, 0, 4 ],
-			[ 6, 4, 4, 4, 4, 4, 6 ]
+			[ 6, 4, 4, 1, 4, 4, 6 ]
 		
 		];
 
 		var objMap:Array<Array<Int>> = [
 			[ -1, -1, -1, -1, -1, -1, -1 ],
 			[ -1, -1, -1, -1, -1, -1, -1 ],
-			[ -1,  5, -1, -1, -1,  5, -1 ],
 			[ -1, -1, -1, -1, -1, -1, -1 ],
-			[ -1, -1, -1, -1, -1, -1, -1 ]
+			[ -1, -1, -1, -1, -1, -1, -1 ],
+			[ -1, -1, -1, 5, -1, -1, -1 ]
 		
 		];
 		
@@ -98,6 +98,7 @@ class IntroScreen extends BaseScreen {
 	private function onCreateObject(tile:Tile) {
 		tile.alpha = 0;
 		Actuate.tween(tile, 4, { alpha:1} ).ease(Quad.easeInOut);
+		Actuate.tween(tile, 2, { y:tile.originY-20} ).ease(Quad.easeInOut).repeat().reflect();
 
 	}
 
@@ -113,7 +114,6 @@ class IntroScreen extends BaseScreen {
 
  		addChild(gameTitle);
 
-
 		
 		tileGrid.x = ((GameController.SCREEN_WIDTH - tileGrid.width) * 0.5);
 		tileGrid.y = ((GameController.SCREEN_HEIGHT - tileGrid.height) * 0.5);
@@ -127,6 +127,15 @@ class IntroScreen extends BaseScreen {
 		
  		engine.putObjectOverTile(actor, 3, 2);
 
+ 		if (lastTile != null) {
+ 			var star:Tile = engine.findObjectByGridPosition(lastTile.gridX, lastTile.gridY);
+			star.visible = true;
+			star.alpha = 0;
+			Actuate.tween(star, 4, { alpha:1} ).ease(Quad.easeInOut);
+
+		}
+		
+
  		var actorY:Float = actor.y;
  		actor.y -= 500;
  		Actuate.tween(actor, 1, {  y: actorY }, false).delay(1).ease(Bounce.easeOut);
@@ -136,6 +145,7 @@ class IntroScreen extends BaseScreen {
 
 	private function removeAnimationComplete() {
 
+		Actuate.reset();
 		GameController.getInstance().dispatchEvent(new flash.events.Event(GameController.SHOW_GAME_NUMBERS_SCREEN));
 
 	}
@@ -151,6 +161,9 @@ class IntroScreen extends BaseScreen {
 		Actuate.tween(tileGrid, 0.5, {  alpha: 0 }, false).delay(1);
 		Actuate.tween(gameTitle, 1, {  y: -300 }, false).delay(1).onComplete(removeAnimationComplete);
 		GameController.getInstance().playJumpSound2();
+		var star:Tile = engine.findObjectByGridPosition(lastTile.gridX, lastTile.gridY);
+		star.visible = false;	
+		
 
 	}
 
@@ -169,9 +182,11 @@ class IntroScreen extends BaseScreen {
 			var midY:Float = actor.y - 300;
 			var xPath:MotionPath = path.bezier (tile.x, tile.y + diffY , midX, midY);//.bezier (boy.x, boy.y , midX, midY);
 	    	
+	    	lastTile = tile;
 	    	Actuate.motionPath (actor, 0.5, { x: xPath.x, y: xPath.y } ).ease(Quad.easeInOut).onComplete(goNumbersGame);
 	    	GameController.getInstance().playJumpSound();
-
+	    	
+	    
 			//Actuate.tween(tile, 0.5, { y: (tile.y + 80) }, false).delay(0.5).ease(Quad.easeOut);
 			//tile.disabled = true;
 		

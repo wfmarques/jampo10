@@ -194,7 +194,7 @@ class GameController extends EventDispatcher {
 
 	public function playFailSound() {
 		
-		var newTransform = new SoundTransform(0.4,0);	
+		var newTransform = new SoundTransform(0.8,0);	
 		soundCache[AUDIO_FAIL].play(0,0,newTransform);
 
 	}
