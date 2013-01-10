@@ -155,7 +155,7 @@ class GameNumbersScreen extends BaseScreen {
 
 	private function removeAnimationComplete() {
 
-		GameController.getInstance().dispatchEvent(new flash.events.Event(GameController.SHOW_INTRO_SCREEN));
+		GameController.getInstance().dispatchEvent(new flash.events.Event(GameController.SHOW_END_SCREEN));
 		phase = 0;
 		canJump = true;
 		

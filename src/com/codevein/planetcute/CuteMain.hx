@@ -1,7 +1,5 @@
 package com.codevein.planetcute;
 
-import flash.display.Bitmap;
-import flash.display.BitmapData;
 import flash.display.Sprite;
 import flash.display.StageAlign;
 import flash.display.StageQuality;
@@ -21,7 +19,6 @@ import com.codevein.planetcute.GameController;
  */
 class CuteMain extends Sprite {
 	
-	private var background:Bitmap; 
 	
 	public function new () { 
 		
@@ -47,10 +44,6 @@ class CuteMain extends Sprite {
 	private function construct ():Void {
 		
 		
-		background = new Bitmap(Assets.getBitmapData ("assets/imgs/background.png"));	
-
-		addChild(background);
-			
 		
 		GameController.getInstance().setRootContainer(this);	
 		GameController.getInstance().initialize();

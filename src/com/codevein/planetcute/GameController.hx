@@ -6,10 +6,14 @@ import flash.events.EventDispatcher;
 import flash.events.Event;
 
 import flash.display.Sprite;
+import flash.display.Bitmap;
+import flash.display.BitmapData;
+
 
 import com.codevein.planetcute.screens.BaseScreen;
 import com.codevein.planetcute.screens.IntroScreen;
 import com.codevein.planetcute.screens.GameNumbersScreen;
+import com.codevein.planetcute.screens.EndScreen;
 
 
 import com.codevein.planetcute.engine.Tile;
@@ -49,6 +53,8 @@ class GameController extends EventDispatcher {
 
 	public inline static var SHOW_INTRO_SCREEN:String = "SHOW_INTRO_SCREEN";
 	public inline static var SHOW_GAME_NUMBERS_SCREEN:String = "SHOW_GAME_NUMBERS_SCREEN";
+	public inline static var SHOW_END_SCREEN:String = "SHOW_END_SCREEN";
+
 
 	public  static var SCREEN_WIDTH:Float = 1024;
 	public  static var SCREEN_HEIGHT:Float = 768;
@@ -60,6 +66,9 @@ class GameController extends EventDispatcher {
 	private var screens:Hash<BaseScreen> = null;
 	public var currentScreen:BaseScreen = null;
 	public var actor:Entity = null;
+	public var ship:Entity = null;
+	public var background:Bitmap; 
+	
 
 	private var soundCache:Array<Sound> ;
 	
@@ -80,19 +89,28 @@ class GameController extends EventDispatcher {
 
 	public function initialize():Void {
 
+		background = new Bitmap(Assets.getBitmapData ("assets/imgs/background.png"));	
+
+		rootContainer.addChild(background);
+			
+		
+
 		screens = new Hash<BaseScreen>();
 
 		screens.set(SHOW_INTRO_SCREEN, new IntroScreen());
 		screens.set(SHOW_GAME_NUMBERS_SCREEN, new GameNumbersScreen());
-		
+		screens.set(SHOW_END_SCREEN, new EndScreen());
+				
 
-		currentScreen = screens.get(SHOW_INTRO_SCREEN);
+		currentScreen = screens.get(SHOW_END_SCREEN);
 		rootContainer.addChild(currentScreen);
 		currentScreen.onStart();
 
 		addEventListener(SHOW_GAME_NUMBERS_SCREEN, goToGameNumberScreen);
 		addEventListener(SHOW_INTRO_SCREEN, goToIntroScreen);
+		addEventListener(SHOW_END_SCREEN, goToEndScreen);
 
+		
 
 		cacheSound();
 
@@ -112,6 +130,10 @@ class GameController extends EventDispatcher {
 
 	public function goToIntroScreen(evt:Event) {
 		gotToScreen(SHOW_INTRO_SCREEN);
+	}
+
+	public function goToEndScreen(evt:Event) {
+		gotToScreen(SHOW_END_SCREEN);
 	}
 
 
@@ -145,6 +167,17 @@ class GameController extends EventDispatcher {
 		}
 		
 		return actor;
+	}
+
+	public function getShip():Entity {
+
+		if (ship == null) {
+
+			ship = new Entity (Assets.getBitmapData ("assets/imgs/beetleship.png"));
+
+		}
+		
+		return ship;
 	}
 
 	private  function cacheSound() {
