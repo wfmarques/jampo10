@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
 
-  <app title="Jump and Learn" file="JumpLearn" main="com.codevein.planetcute.CuteMain" package="com.codevein.jumpandlearn" version="1.0.0" icon="assets/icon.png" company="WM Games" />
+  <app title="Jungo-10" file="Jungo10" main="com.codevein.planetcute.CuteMain" package="com.codevein.jungo10" version="1.0.0" icon="assets/icon.png" company="WM Games" />
   
   <ios deployment="5.0" binaries="fat" devices="universal" compiler="gcc" />
 ı

@@ -102,7 +102,7 @@ class GameController extends EventDispatcher {
 		screens.set(SHOW_END_SCREEN, new EndScreen());
 				
 
-		currentScreen = screens.get(SHOW_END_SCREEN);
+		currentScreen = screens.get(SHOW_INTRO_SCREEN);
 		rootContainer.addChild(currentScreen);
 		currentScreen.onStart();
 

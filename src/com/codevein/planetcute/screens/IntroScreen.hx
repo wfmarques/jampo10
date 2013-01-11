@@ -30,6 +30,10 @@ class IntroScreen extends BaseScreen {
 	private var gameTitle:TextField;
 	private var actor:Entity;
 	private var titleWidth:Float;
+	private var gridW:Float;
+	private var gridH:Float;
+	
+	
 	private var lastTile:Tile;
 
 	public function new () {
@@ -46,10 +50,9 @@ class IntroScreen extends BaseScreen {
 
 		actor = GameController.getInstance().getMainCharacter();
 
-		gameTitle = TextUtil.getInstance().createTextField(GameController.DEFAULT_FONT, "Jump & Learn", 72);
+		gameTitle = TextUtil.getInstance().createTextField(GameController.DEFAULT_FONT, "Jungo - 10", 72);
 		titleWidth = gameTitle.width;
 
-		
 		var btdMap:Array<String> = new Array<String>();
 		btdMap[0] = "assets/imgs/Water_Block.png";
 		btdMap[1] = "assets/imgs/Stone_Block_Tall.png";
@@ -83,8 +86,10 @@ class IntroScreen extends BaseScreen {
 		engine = new TileEngine();
 
 		tileGrid = engine.createGrid( btdMap, tileMap, objMap, onCreateTile, onCreateObject );
+		gridW = tileGrid.width;
+		gridH = tileGrid.height;
 		
-	}
+	}	
 
 	private function onCreateTile(tile:Tile) {
 		tile.alpha = 0;
@@ -104,7 +109,6 @@ class IntroScreen extends BaseScreen {
 
 
 	public override function onStart() {
-
 		gameTitle.y = 20;
  		gameTitle.x = ((GameController.SCREEN_WIDTH - titleWidth) * 0.5);
  		gameTitle.alpha = 0;
@@ -115,8 +119,10 @@ class IntroScreen extends BaseScreen {
  		addChild(gameTitle);
 
 		
-		tileGrid.x = ((GameController.SCREEN_WIDTH - tileGrid.width) * 0.5);
-		tileGrid.y = ((GameController.SCREEN_HEIGHT - tileGrid.height) * 0.5);
+		tileGrid.x = ((GameController.SCREEN_WIDTH - gridW) * 0.5);
+		tileGrid.y = ((GameController.SCREEN_HEIGHT - gridH) * 0.5);
+
+		trace(tileGrid.y);
 
 		addChild(tileGrid);
 
@@ -140,6 +146,7 @@ class IntroScreen extends BaseScreen {
  		actor.y -= 500;
  		Actuate.tween(actor, 1, {  y: actorY }, false).delay(1).ease(Bounce.easeOut);
 		Actuate.timer (1.5).onComplete (GameController.getInstance().playJumpSound);
+
 
 	}
 

@@ -17,7 +17,7 @@ class Tile  extends Entity {
 	inline public static var TYPE_OBJECT = 3;
 			
 
-	public function new (aBtDataId:String, aId:Int, aType:Int, aGridX:Int = -1, aGridY:Int = -1) {
+	public function new (aBtDataId:String, aId:Int = 0, aType:Int = 0, aGridX:Int = -1, aGridY:Int = -1) {
 		
 		super ( Assets.getBitmapData (aBtDataId) );
 

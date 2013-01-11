@@ -42,6 +42,7 @@ class GameNumbersScreen extends BaseScreen {
 	private var nextItem:Int = 0;
 	private var canJump:Bool = true;
 	private var btdMap:Array<String> ;
+	private var numCount:Int = 0;
 
 	public function new () {
 		
