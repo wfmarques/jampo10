@@ -14,6 +14,7 @@ import com.codevein.planetcute.screens.BaseScreen;
 import com.codevein.planetcute.screens.IntroScreen;
 import com.codevein.planetcute.screens.GameNumbersScreen;
 import com.codevein.planetcute.screens.EndScreen;
+import com.codevein.planetcute.screens.LangScreen;
 
 
 import com.codevein.planetcute.engine.Tile;
@@ -47,13 +48,15 @@ class GameController extends EventDispatcher {
 
 
 
-	public inline static var DEFAULT_FONT:String = "assets/fonts/AgentOrange.ttf";
+	public inline static var DEFAULT_FONT:String = "assets/fonts/ComicaBD.ttf";
 	public inline static var ITEM_GAME_FONT:String = "assets/fonts/#44v2.ttf";
 
 
 	public inline static var SHOW_INTRO_SCREEN:String = "SHOW_INTRO_SCREEN";
 	public inline static var SHOW_GAME_NUMBERS_SCREEN:String = "SHOW_GAME_NUMBERS_SCREEN";
 	public inline static var SHOW_END_SCREEN:String = "SHOW_END_SCREEN";
+	public inline static var SHOW_LANG_SCREEN:String = "SHOW_LANG_SCREEN";
+
 
 
 	public  static var SCREEN_WIDTH:Float = 1024;
@@ -68,6 +71,7 @@ class GameController extends EventDispatcher {
 	public var actor:Entity = null;
 	public var ship:Entity = null;
 	public var background:Bitmap; 
+	public var currentLanguage = "en";
 	
 
 	private var soundCache:Array<Sound> ;
@@ -100,23 +104,18 @@ class GameController extends EventDispatcher {
 		screens.set(SHOW_INTRO_SCREEN, new IntroScreen());
 		screens.set(SHOW_GAME_NUMBERS_SCREEN, new GameNumbersScreen());
 		screens.set(SHOW_END_SCREEN, new EndScreen());
+		screens.set(SHOW_LANG_SCREEN, new LangScreen());
+		
 				
 
-		currentScreen = screens.get(SHOW_INTRO_SCREEN);
+		currentScreen = screens.get(SHOW_LANG_SCREEN);
 		rootContainer.addChild(currentScreen);
 		currentScreen.onStart();
 
-		addEventListener(SHOW_GAME_NUMBERS_SCREEN, goToGameNumberScreen);
-		addEventListener(SHOW_INTRO_SCREEN, goToIntroScreen);
-		addEventListener(SHOW_END_SCREEN, goToEndScreen);
-
-		
-
 		cacheSound();
-
 	}
 
-	private function gotToScreen(screenId:String) {
+	public function gotToScreen(screenId:String) {
 		currentScreen.onRemove();
 		rootContainer.removeChild(currentScreen);
 		currentScreen = screens.get(screenId);
@@ -124,20 +123,7 @@ class GameController extends EventDispatcher {
 		rootContainer.addChild(currentScreen);
 
 	}
-	public function goToGameNumberScreen(evt:Event) {
-		gotToScreen(SHOW_GAME_NUMBERS_SCREEN);
-	}
-
-	public function goToIntroScreen(evt:Event) {
-		gotToScreen(SHOW_INTRO_SCREEN);
-	}
-
-	public function goToEndScreen(evt:Event) {
-		gotToScreen(SHOW_END_SCREEN);
-	}
-
-
-
+	
 	public function updateMousePosition(aSX:Float, aSY:Float) {
 		
 		currentScreen.updateMousePosition(aSX, aSY);
@@ -180,16 +166,22 @@ class GameController extends EventDispatcher {
 		return ship;
 	}
 
-	private  function cacheSound() {
+	public function cacheNumbersSound() {
+		for (i in 0...10) {
+			soundCache[i+1] = Assets.getSound ("assets/sounds/_"+ (i+1) +"_"+ currentLanguage +".wav");
+		}
+	}
+
+	private function cacheSound() {
 
 
 		soundCache = new Array<Sound>();
 
 		soundCache[AUDIO_BACKGROUND] = Assets.getSound ("assets/music/mushroom_dance_0.mp3");
 
-		for (i in 0...10) {
-			soundCache[i+1] = Assets.getSound ("assets/sounds/_"+ (i+1) +"_pt.wav");
-		}
+		/*for (i in 0...10) {
+			soundCache[i+1] = Assets.getSound ("assets/sounds/_"+ (i+1) +"_"+ currentLanguage +".wav");
+		}*/
 		soundCache[AUDIO_JUMP_1]  = Assets.getSound ("assets/sounds/qubodup-cfork-ccby3-jump.wav");
 		soundCache[AUDIO_JUMP_2]  = Assets.getSound ("assets/sounds/apricotjumpbounce-jump.wav");
 		soundCache[AUDIO_FAIL]    = Assets.getSound ("assets/sounds/fail.wav");

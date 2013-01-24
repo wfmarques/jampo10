@@ -112,14 +112,21 @@ class EndScreen extends BaseScreen {
 
 		
 
-		GameCreditsTexts.getInstance().reset("en");
+		GameCreditsTexts.getInstance().reset(GameController.getInstance().currentLanguage);
 		
 		numCount = 1;
 
 		numText.text = numCount+"";
 
-		blinkStar.x = (Math.random () * GameController.SCREEN_WIDTH) + 50 ;
-		blinkStar.y = (Math.random () * GameController.SCREEN_HEIGHT) - 50 ;
+		addChild(credit);
+		
+		credit.alpha = 0;
+		loadNextCredit();
+		
+
+		blinkStar.x = (Math.random () * GameController.SCREEN_WIDTH * 0.7)  ;
+		blinkStar.y = (Math.random () * GameController.SCREEN_HEIGHT * 0.7) ;
+			
 		addChild(blinkStar);
 		blinkStar.visible = false;
 		
@@ -149,10 +156,6 @@ class EndScreen extends BaseScreen {
 
 			});
 
-		addChild(credit);
-		
-		credit.alpha = 0;
-		loadNextCredit();
 		
 	}
 
@@ -184,7 +187,8 @@ class EndScreen extends BaseScreen {
 
 		Actuate.reset();
 		this.removeEventListener(flash.events.Event.ENTER_FRAME, onEnterFrame );
-   		GameController.getInstance().dispatchEvent(new flash.events.Event(GameController.SHOW_INTRO_SCREEN));
+   		GameController.getInstance().gotToScreen(GameController.SHOW_INTRO_SCREEN);
+
 
 	}
 
@@ -201,9 +205,9 @@ class EndScreen extends BaseScreen {
 		if (!animatingStar && (now - lastTimeTick) > 6000) {
 			animatingStar = true;
 			Actuate.tween(blinkStar , 0.5, {alpha:0}, false ).onComplete(function(){
-				blinkStar.x = (Math.random () * GameController.SCREEN_WIDTH * 0.7) + 100  ;
-				blinkStar.y = (Math.random () * GameController.SCREEN_HEIGHT * 0.7) + 100 ;
-				Actuate.tween(blinkStar, 2, {alpha:1}, false ).onComplete(function(){animatingStar = false;});
+				blinkStar.x = (Math.random () * GameController.SCREEN_WIDTH * 0.7)  ;
+				blinkStar.y = (Math.random () * GameController.SCREEN_HEIGHT * 0.7) ;
+				Actuate.tween(blinkStar, 2, {alpha:1}, false ).onComplete(function(){animatingStar = false;catchBlinkStar();});
 			});
 			lastTimeTick = now;
 		} 

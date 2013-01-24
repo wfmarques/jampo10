@@ -21,13 +21,21 @@ import com.codevein.planetcute.util.TextUtil;
 
 import com.codevein.planetcute.GameController;
 
+import flash.display.Bitmap;
+
+import flash.events.MouseEvent;
+import flash.events.Event;
+
 
 class IntroScreen extends BaseScreen {
 
 
 	private var engine:TileEngine;
 	private var tileGrid:Sprite;
-	private var gameTitle:TextField;
+	private var gameTitle:Bitmap;
+	private var enButton:Sprite;
+	private var ptButton:Sprite;
+	
 	private var actor:Entity;
 	private var titleWidth:Float;
 	private var gridW:Float;
@@ -50,8 +58,11 @@ class IntroScreen extends BaseScreen {
 
 		actor = GameController.getInstance().getMainCharacter();
 
-		gameTitle = TextUtil.getInstance().createTextField(GameController.DEFAULT_FONT, "Jungo - 10", 72);
+		//gameTitle = TextUtil.getInstance().createTextField(GameController.DEFAULT_FONT, "Jampo - 10", 72);
+		gameTitle =  new Bitmap(Assets.getBitmapData ("assets/imgs/jampo_sign.png"));
+
 		titleWidth = gameTitle.width;
+
 
 		var btdMap:Array<String> = new Array<String>();
 		btdMap[0] = "assets/imgs/Water_Block.png";
@@ -67,7 +78,6 @@ class IntroScreen extends BaseScreen {
 
 		var tileMap:Array<Array<Int>> = [
 			[ 6, 4, 4, 4, 4, 4, 6 ],
-			[ 4, 0, 0, 0, 0, 0, 4 ],
 			[ 4, 0, 0, 4, 0, 0, 4 ],
 			[ 4, 0, 0, 0, 0, 0, 4 ],
 			[ 6, 4, 4, 1, 4, 4, 6 ]
@@ -75,7 +85,6 @@ class IntroScreen extends BaseScreen {
 		];
 
 		var objMap:Array<Array<Int>> = [
-			[ -1, -1, -1, -1, -1, -1, -1 ],
 			[ -1, -1, -1, -1, -1, -1, -1 ],
 			[ -1, -1, -1, -1, -1, -1, -1 ],
 			[ -1, -1, -1, -1, -1, -1, -1 ],
@@ -88,8 +97,45 @@ class IntroScreen extends BaseScreen {
 		tileGrid = engine.createGrid( btdMap, tileMap, objMap, onCreateTile, onCreateObject );
 		gridW = tileGrid.width;
 		gridH = tileGrid.height;
+
+
+		enButton = new Sprite();
+		enButton.mouseEnabled = true;
+		enButton.addEventListener(MouseEvent.CLICK, onEnglish);
+		enButton.addChild(TextUtil.getInstance().createTextField(GameController.DEFAULT_FONT, "English", 48, 0xfbc90e));
+		
+		ptButton = new Sprite();
+		ptButton.mouseEnabled = true;
+		ptButton.addEventListener(MouseEvent.CLICK, onPortuguese);
+
+		ptButton.addChild(TextUtil.getInstance().createTextField(GameController.DEFAULT_FONT, "Português", 48, 0xfbc90e));
+		
+
+		
 		
 	}	
+
+
+	private function onEnglish(evt:Event) {
+		trace("ingles");
+		GameController.getInstance().currentLanguage = "en";
+		GameController.getInstance().cacheNumbersSound();
+		
+		ptButton.alpha = 0.4;
+		enButton.alpha = 1.0;
+		
+	}
+
+	private function onPortuguese(evt:Event) {
+		trace("portugues");
+
+		GameController.getInstance().currentLanguage = "pt";
+		GameController.getInstance().cacheNumbersSound();
+		
+		enButton.alpha = 0.4;
+		ptButton.alpha = 1.0;
+		
+	}
 
 	private function onCreateTile(tile:Tile) {
 		tile.alpha = 0;
@@ -109,7 +155,7 @@ class IntroScreen extends BaseScreen {
 
 
 	public override function onStart() {
-		gameTitle.y = 20;
+		gameTitle.y = 30;
  		gameTitle.x = ((GameController.SCREEN_WIDTH - titleWidth) * 0.5);
  		gameTitle.alpha = 0;
 
@@ -120,10 +166,9 @@ class IntroScreen extends BaseScreen {
 
 		
 		tileGrid.x = ((GameController.SCREEN_WIDTH - gridW) * 0.5);
-		tileGrid.y = ((GameController.SCREEN_HEIGHT - gridH) * 0.5);
+		tileGrid.y = ((GameController.SCREEN_HEIGHT - gridH) * 0.5) ;
 
-		trace(tileGrid.y);
-
+		
 		addChild(tileGrid);
 
 		tileGrid.visible = true;
@@ -131,7 +176,7 @@ class IntroScreen extends BaseScreen {
 		
 		tileGrid.addChild(actor);
 		
- 		engine.putObjectOverTile(actor, 3, 2);
+ 		engine.putObjectOverTile(actor, 3, 1);
 
  		if (lastTile != null) {
  			var star:Tile = engine.findObjectByGridPosition(lastTile.gridX, lastTile.gridY);
@@ -147,13 +192,26 @@ class IntroScreen extends BaseScreen {
  		Actuate.tween(actor, 1, {  y: actorY }, false).delay(1).ease(Bounce.easeOut);
 		Actuate.timer (1.5).onComplete (GameController.getInstance().playJumpSound);
 
+		enButton.visible = true;
+		ptButton.visible = true;
+		
+		enButton.y = gridH + tileGrid.y - enButton.height + 10;
+		enButton.x = tileGrid.x ;
+		enButton.alpha = (GameController.getInstance().currentLanguage=="en")?1.0:0.4;
+		addChild(enButton);
+
+		ptButton.y = gridH + tileGrid.y - ptButton.height + 10;
+		ptButton.x = tileGrid.x + gridW - ptButton.width;
+		ptButton.alpha = (GameController.getInstance().currentLanguage=="pt")?1.0:0.4;
+		
+		addChild(ptButton);
 
 	}
 
 	private function removeAnimationComplete() {
 
 		Actuate.reset();
-		GameController.getInstance().dispatchEvent(new flash.events.Event(GameController.SHOW_GAME_NUMBERS_SCREEN));
+		GameController.getInstance().gotToScreen(GameController.SHOW_GAME_NUMBERS_SCREEN);
 
 	}
 
@@ -166,6 +224,9 @@ class IntroScreen extends BaseScreen {
 	public function goNumbersGame() {
 		Actuate.tween(actor, 1.5, {  y: -500 }, false);
 		Actuate.tween(tileGrid, 0.5, {  alpha: 0 }, false).delay(1);
+		Actuate.tween(enButton, 0.5, {  alpha: 0 }, false);
+		Actuate.tween(ptButton, 0.5, {  alpha: 0 }, false);
+		
 		Actuate.tween(gameTitle, 1, {  y: -300 }, false).delay(1).onComplete(removeAnimationComplete);
 		GameController.getInstance().playJumpSound2();
 		var star:Tile = engine.findObjectByGridPosition(lastTile.gridX, lastTile.gridY);

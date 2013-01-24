@@ -25,6 +25,8 @@ import com.codevein.planetcute.GameNumbersMaps;
 
 import flash.filters.GlowFilter;
 
+import flash.events.MouseEvent;
+import flash.events.Event;
 
 
 
@@ -43,6 +45,8 @@ class GameNumbersScreen extends BaseScreen {
 	private var canJump:Bool = true;
 	private var btdMap:Array<String> ;
 	private var numCount:Int = 0;
+	private var menuButton:Sprite;
+	
 
 	public function new () {
 		
@@ -59,6 +63,12 @@ class GameNumbersScreen extends BaseScreen {
 		engine = new TileEngine();
 
 		maps = new GameNumbersMaps();
+
+		menuButton = new Sprite();
+		menuButton.mouseEnabled = true;
+		menuButton.addEventListener(MouseEvent.CLICK, onMenu);
+		menuButton.addChild(TextUtil.getInstance().createTextField(GameController.DEFAULT_FONT, "Menu", 48, 0xfbc90e));
+		
 
 		
 	}
@@ -124,14 +134,28 @@ class GameNumbersScreen extends BaseScreen {
 
 		nextItem = 0;//reseta o contador
 
+		menuButton.y = 0;
+		menuButton.x = GameController.SCREEN_WIDTH - menuButton.width - 20;
+		addChild(menuButton);
+
+
 		
+	}
+
+
+	private function onMenu(evt:Event) {
+		GameController.getInstance().gotToScreen(GameController.SHOW_INTRO_SCREEN);
+	
 	}
 
 	private function goNextPhase() {
 
 		var target:flash.geom.Point = maps.getData(phase).targetTilePosition;
 		var star:Tile = engine.findObjectByGridPosition(target.x, target.y);
-		star.visible = false;	
+		if (star != null) {
+			star.visible = false;	
+		
+		}
 		
 		if (phase + 1 < maps.totalPhases()) {
 			
@@ -156,7 +180,8 @@ class GameNumbersScreen extends BaseScreen {
 
 	private function removeAnimationComplete() {
 
-		GameController.getInstance().dispatchEvent(new flash.events.Event(GameController.SHOW_END_SCREEN));
+		GameController.getInstance().gotToScreen(GameController.SHOW_END_SCREEN);
+
 		phase = 0;
 		canJump = true;
 		
@@ -175,6 +200,7 @@ class GameNumbersScreen extends BaseScreen {
 			var diffY:Int = ((tile.type == Tile.TYPE_GROUND_TALL)?-80:-40);
 			
 			var path:MotionPath = new MotionPath();
+						
 			var midX:Float = ( (actor.x + tile.x) * 0.5 );
 			var midY:Float = ( (actor.y + tile.y) * 0.5 ) - 320;
 			var xPath:MotionPath = path.bezier (tile.x, tile.y + diffY , midX, midY);//.bezier (boy.x, boy.y , midX, midY);
@@ -204,6 +230,17 @@ class GameNumbersScreen extends BaseScreen {
 		    			obj.filters = [glow];
 		    		},[tile.getChildAt(1)]);
 					Actuate.timer (0.5).onComplete (GameController.getInstance().playNumberSound, [tile.answerData]);
+					var star:Tile = engine.findObjectByGridPosition(target.x, target.y);
+		
+					if (star != null && nextItem ==  maps.getData(phase).answers.length) {
+						var py = star.y;
+						var px = star.x;
+						var path2:MotionPath = new MotionPath();
+						path2.line(px,py+40).line(px, py);
+						Actuate.motionPath (star, 0.5, { y: path2.y } ).repeat(50).reflect().ease(Quad.easeInOut);
+			
+						//Actuate.tween(star, 0.2, {y:py + 20}).repeat(50).reflect();
+					}
 					
 				}
 			}  else if (  (tile.gridX == target.x && tile.gridY == target.y )   && nextItem >=  maps.getData(phase).answers.length  ) {
