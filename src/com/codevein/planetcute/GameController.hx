@@ -125,9 +125,9 @@ class GameController extends EventDispatcher {
 		currentScreen.onRemove();
 		rootContainer.removeChild(currentScreen);
 		currentScreen = screens.get(screenId);
-		currentScreen.onStart();
 		rootContainer.addChild(currentScreen);
-
+		currentScreen.onStart();
+	
 	}
 	
 	public function updateMousePosition(aSX:Float, aSY:Float) {

@@ -150,6 +150,9 @@ class IntroScreen extends BaseScreen {
 
 
 	public override function onStart() {
+
+		Actuate.reset();
+		
 		gameTitle.y = 30;
  		gameTitle.x = ((GameController.SCREEN_WIDTH - titleWidth) * 0.5);
  		gameTitle.alpha = 0;

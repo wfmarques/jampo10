@@ -108,7 +108,6 @@ class GameNumbersScreen extends BaseScreen {
 	
 	public override function onStart() {
 
-		Actuate.reset();
 		
 		nextItem = 0;//reseta o contador
 
