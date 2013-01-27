@@ -102,13 +102,13 @@ class IntroScreen extends BaseScreen {
 		enButton = new Sprite();
 		enButton.mouseEnabled = true;
 		enButton.addEventListener(MouseEvent.CLICK, onEnglish);
-		enButton.addChild(TextUtil.getInstance().createTextField(GameController.DEFAULT_FONT, "English", 48, 0xfbc90e));
+		enButton.addChild(TextUtil.getInstance().createTextField(GameController.DEFAULT_FONT, "English\n", 48, 0xfbc90e, true));
 		
 		ptButton = new Sprite();
 		ptButton.mouseEnabled = true;
 		ptButton.addEventListener(MouseEvent.CLICK, onPortuguese);
 
-		ptButton.addChild(TextUtil.getInstance().createTextField(GameController.DEFAULT_FONT, "Português", 48, 0xfbc90e));
+		ptButton.addChild(TextUtil.getInstance().createTextField(GameController.DEFAULT_FONT, "Português\n", 48, 0xfbc90e, true));
 		
 
 		
@@ -117,9 +117,8 @@ class IntroScreen extends BaseScreen {
 
 
 	private function onEnglish(evt:Event) {
-		trace("ingles");
+		GameController.getInstance().playClickSound();
 		GameController.getInstance().currentLanguage = "en";
-		GameController.getInstance().cacheNumbersSound();
 		
 		ptButton.alpha = 0.4;
 		enButton.alpha = 1.0;
@@ -127,10 +126,8 @@ class IntroScreen extends BaseScreen {
 	}
 
 	private function onPortuguese(evt:Event) {
-		trace("portugues");
-
+		GameController.getInstance().playClickSound();
 		GameController.getInstance().currentLanguage = "pt";
-		GameController.getInstance().cacheNumbersSound();
 		
 		enButton.alpha = 0.4;
 		ptButton.alpha = 1.0;
@@ -147,9 +144,7 @@ class IntroScreen extends BaseScreen {
 	}
 
 	private function onCreateObject(tile:Tile) {
-		tile.alpha = 0;
-		Actuate.tween(tile, 4, { alpha:1} ).ease(Quad.easeInOut);
-		Actuate.tween(tile, 2, { y:tile.originY-20} ).ease(Quad.easeInOut).repeat().reflect();
+		Actuate.tween(tile, 0.5, { y:tile.originY-20} ).ease(Quad.easeInOut).repeat().reflect();
 
 	}
 
@@ -183,6 +178,7 @@ class IntroScreen extends BaseScreen {
 			star.visible = true;
 			star.alpha = 0;
 			Actuate.tween(star, 4, { alpha:1} ).ease(Quad.easeInOut);
+			Actuate.tween(star, 0.5, { y:star.originY-20} ).ease(Quad.easeInOut).repeat().reflect();
 
 		}
 		

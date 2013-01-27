@@ -55,25 +55,21 @@ class LangScreen extends BaseScreen {
 
 		ptButton.addChild(new Bitmap(Assets.getBitmapData ("assets/imgs/button_pt.png")));
 
-		enButton.alpha = 0.7;
-		ptButton.alpha = 0.7;
+		//enButton.alpha = 0.7;
+		//ptButton.alpha = 0.7;
 		
 	}	
 
 	private function onEnglish(evt:Event) {
-		trace("ingles");
 		GameController.getInstance().currentLanguage = "en";
-		ptButton.alpha = 0.7;
-		
-		Actuate.tween(enButton, 0.5, { alpha:1.0  } ).onComplete(removeAnimationComplete);
-		
+		GameController.getInstance().playClickSound();
+		Actuate.tween(ptButton, 1.5, { y:1024.0  } ).onComplete(removeAnimationComplete);
 	}
 
 	private function onPortuguese(evt:Event) {
-		trace("portugues");
 		GameController.getInstance().currentLanguage = "pt";
-		enButton.alpha = 0.7;
-		Actuate.tween(ptButton, 0.5, { alpha:1.0  } ).onComplete(removeAnimationComplete);
+		GameController.getInstance().playClickSound();
+		Actuate.tween(enButton, 1.5, { y:-200.0  } ).onComplete(removeAnimationComplete);
 		
 	}
 
@@ -98,7 +94,7 @@ class LangScreen extends BaseScreen {
 		var ptFinalX:Float = ((GameController.SCREEN_WIDTH - ptButton.width) * 0.5);
 		var ptFinalY:Float = ((GameController.SCREEN_HEIGHT - ptButton.height) * 0.5);
 		
-ptButton.scaleX = 0.1;
+		ptButton.scaleX = 0.1;
 		ptButton.scaleY = 0.1;
 
 		ptButton.x = ((GameController.SCREEN_WIDTH - ptButton.width) * 0.5);
@@ -116,8 +112,7 @@ ptButton.scaleX = 0.1;
 
 	private function removeAnimationComplete() {
 
-		Actuate.reset();
-		GameController.getInstance().cacheNumbersSound();
+		//Actuate.reset();
 		GameController.getInstance().gotToScreen(GameController.SHOW_INTRO_SCREEN);
 	
 	}

@@ -44,11 +44,12 @@ class GameController extends EventDispatcher {
 	public inline static var AUDIO_JUMP_2:Int  = 12;
 	public inline static var AUDIO_FAIL:Int    = 13;
 	public inline static var AUDIO_CLAP:Int    = 14;
+	public inline static var AUDIO_CLICK:Int   = 15;
 
 
 
 
-	public inline static var DEFAULT_FONT:String = "assets/fonts/ComicaBD.ttf";
+	public inline static var DEFAULT_FONT:String = "assets/fonts/#44v2.ttf";
 	public inline static var ITEM_GAME_FONT:String = "assets/fonts/#44v2.ttf";
 
 
@@ -72,6 +73,8 @@ class GameController extends EventDispatcher {
 	public var ship:Entity = null;
 	public var background:Bitmap; 
 	public var currentLanguage = "en";
+	private var ext = ".wav";
+	private var extMusic = ".mp3";
 	
 
 	private var soundCache:Array<Sound> ;
@@ -88,7 +91,10 @@ class GameController extends EventDispatcher {
 
 
 	private function construct ():Void {
-
+		#if ios 
+			ext = ".caf";
+			extMusic = ".aifc";
+		#end
 	}
 
 	public function initialize():Void {
@@ -166,27 +172,30 @@ class GameController extends EventDispatcher {
 		return ship;
 	}
 
-	public function cacheNumbersSound() {
-		for (i in 0...10) {
-			soundCache[i+1] = Assets.getSound ("assets/sounds/_"+ (i+1) +"_"+ currentLanguage +".wav");
-		}
-	}
+	
 
 	private function cacheSound() {
 
 
 		soundCache = new Array<Sound>();
 
-		soundCache[AUDIO_BACKGROUND] = Assets.getSound ("assets/music/mushroom_dance_0.mp3");
+		soundCache[AUDIO_BACKGROUND] = Assets.getSound ("assets/music/mushroom_dance_0"+extMusic);
 
-		/*for (i in 0...10) {
-			soundCache[i+1] = Assets.getSound ("assets/sounds/_"+ (i+1) +"_"+ currentLanguage +".wav");
-		}*/
-		soundCache[AUDIO_JUMP_1]  = Assets.getSound ("assets/sounds/qubodup-cfork-ccby3-jump.wav");
-		soundCache[AUDIO_JUMP_2]  = Assets.getSound ("assets/sounds/apricotjumpbounce-jump.wav");
-		soundCache[AUDIO_FAIL]    = Assets.getSound ("assets/sounds/fail.wav");
-		soundCache[AUDIO_CLAP]    = Assets.getSound ("assets/sounds/clap.wav");
-			
+		for (i in 0...10) {
+			soundCache[i+1] = Assets.getSound ("assets/sounds/_"+ (i+1) +"_pt"+ ext);
+		
+		}
+		
+		soundCache[AUDIO_JUMP_1]  = Assets.getSound ("assets/sounds/qubodup-cfork-ccby3-jump"+ ext);
+		soundCache[AUDIO_JUMP_2]  = Assets.getSound ("assets/sounds/apricotjumpbounce-jump"+ ext);
+		soundCache[AUDIO_FAIL]    = Assets.getSound ("assets/sounds/fail"+ ext);
+		soundCache[AUDIO_CLAP]    = Assets.getSound ("assets/sounds/clap"+ ext);
+		soundCache[AUDIO_CLICK]   = Assets.getSound ("assets/sounds/click"+ ext);
+
+		for (i in 20...30) {
+			soundCache[i+1] = Assets.getSound ("assets/sounds/_"+ (i+1-20) +"_en"+ ext);
+		}
+				
 	}
 
 	private function sound_onComplete(evt:Event) {
@@ -210,6 +219,16 @@ class GameController extends EventDispatcher {
 	}
 
 
+	public function playClickSound() {
+
+			
+		var newTransform = new SoundTransform(0.8,0);	
+		soundCache[AUDIO_CLICK].play(0,0,newTransform);
+	
+	}
+
+
+
 	public function playJumpSound2() {
 		
 		var newTransform = new SoundTransform(0.1,0);	
@@ -229,6 +248,9 @@ class GameController extends EventDispatcher {
 
 		var newTransform = new SoundTransform(0.8,0);	
 		var idx:Int = Std.parseInt(number);
+		if (currentLanguage == "en") {
+			idx = idx + 20;
+		}
 		soundCache[idx].play(0,0,newTransform);
 
 	}

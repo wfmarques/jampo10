@@ -207,7 +207,7 @@ class EndScreen extends BaseScreen {
 			Actuate.tween(blinkStar , 0.5, {alpha:0}, false ).onComplete(function(){
 				blinkStar.x = (Math.random () * GameController.SCREEN_WIDTH * 0.7)  ;
 				blinkStar.y = (Math.random () * GameController.SCREEN_HEIGHT * 0.7) ;
-				Actuate.tween(blinkStar, 2, {alpha:1}, false ).onComplete(function(){animatingStar = false;catchBlinkStar();});
+				Actuate.tween(blinkStar, 2, {alpha:1}, false ).onComplete(function(){animatingStar = false;});
 			});
 			lastTimeTick = now;
 		} 

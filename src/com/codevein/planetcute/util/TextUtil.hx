@@ -27,7 +27,7 @@ class TextUtil  {
 	}
 
 
-	public function createTextField(fontPath:String, text:String = "EMPTY", fontSize:Int = 64, fontColor:Int = 0xFFFFFF ):TextField {
+	public function createTextField(fontPath:String, text:String = "EMPTY", fontSize:Int = 64, fontColor:Int = 0xFFFFFF, dropShadow:Bool = false ):TextField {
 
 		var font:Font = Assets.getFont(fontPath);
 		var format:TextFormat = new TextFormat (font.fontName, fontSize, fontColor);
@@ -39,7 +39,9 @@ class TextUtil  {
 		textField.embedFonts = true;
 		textField.text = text;
 		textField.cacheAsBitmap = true;
-
+		textField.height += 5;
+		if (dropShadow)
+			textField.filters = [new flash.filters.DropShadowFilter()];
 		return textField;
 	}
 }

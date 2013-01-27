@@ -134,7 +134,7 @@ class TileEngine  {
 					tileType = tile.type;
 					tileId = objectMap[i][j];
 
-					if (tileId > -1) {
+					if (tileId > -1 && imageList[tileId] != null) {
 
 						tile = new Tile(imageList[tileId], tileId, Tile.TYPE_OBJECT, j, i);
 						tile.x = tile.width * j;

@@ -67,7 +67,7 @@ class GameNumbersScreen extends BaseScreen {
 		menuButton = new Sprite();
 		menuButton.mouseEnabled = true;
 		menuButton.addEventListener(MouseEvent.CLICK, onMenu);
-		menuButton.addChild(TextUtil.getInstance().createTextField(GameController.DEFAULT_FONT, "Menu", 48, 0xfbc90e));
+		menuButton.addChild(TextUtil.getInstance().createTextField(GameController.DEFAULT_FONT, " Menu\n", 48, 0xfbc90e, true));
 		
 
 		
@@ -135,7 +135,7 @@ class GameNumbersScreen extends BaseScreen {
 		nextItem = 0;//reseta o contador
 
 		menuButton.y = 0;
-		menuButton.x = GameController.SCREEN_WIDTH - menuButton.width - 20;
+		menuButton.x = 10;
 		addChild(menuButton);
 
 
@@ -144,6 +144,7 @@ class GameNumbersScreen extends BaseScreen {
 
 
 	private function onMenu(evt:Event) {
+		GameController.getInstance().playClickSound();
 		GameController.getInstance().gotToScreen(GameController.SHOW_INTRO_SCREEN);
 	
 	}
@@ -211,7 +212,7 @@ class GameNumbersScreen extends BaseScreen {
 
 			if (tile != null  && (tile.id == GameNumbersMaps.NUMBER_CONTAINER || (tile.gridX == target.x && tile.gridY == target.y ) )  && nextItem <  maps.getData(phase).answers.length  )  {
 
-				if (tile.answerData != maps.getData(phase).answers[nextItem]) {
+				if (tile.answerData != maps.getData(phase).answers[nextItem] ) {
 
 					xPath.bezier (lastTile.x, lastTile.y + diffY , midX, midY);
 					
@@ -251,6 +252,17 @@ class GameNumbersScreen extends BaseScreen {
 				phase_over = true;
 
 
+			} else {
+
+					xPath.bezier (lastTile.x, lastTile.y + diffY , midX, midY);
+					
+					animTime = 1;
+					Actuate.stop(tile);
+					tile.y = tile.originY;
+					Actuate.tween(tile, 0.5, { y: (tile.originY + 80) }, true).delay(0.5).reverse().ease(Quad.easeOut);
+					Actuate.timer (0.5).onComplete (GameController.getInstance().playFailSound);
+					fail= true;
+					
 			} 
 
 

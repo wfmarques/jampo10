@@ -18,14 +18,14 @@ class Tile  extends Entity {
 			
 
 	public function new (aBtDataId:String, aId:Int = 0, aType:Int = 0, aGridX:Int = -1, aGridY:Int = -1) {
-		
-		super ( Assets.getBitmapData (aBtDataId) );
+		if (aBtDataId != null) {
+			super ( Assets.getBitmapData (aBtDataId) );
 
-		this.type = aType;
-		this.id = aId;
-		this.gridX = aGridX;
-		this.gridY = aGridY;
-
+			this.type = aType;
+			this.id = aId;
+			this.gridX = aGridX;
+			this.gridY = aGridY;
+		}
 		//graphics.lineStyle(3,0x00ff00);
 		//graphics.drawRect(0,0,this.bitmap.width,this.bitmap.height);
 

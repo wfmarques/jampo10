@@ -56,6 +56,7 @@ class CuteMain extends Sprite {
 		
 		Lib.current.stage.align = StageAlign.TOP_LEFT;
 		Lib.current.stage.scaleMode = StageScaleMode.NO_BORDER;
+		Lib.current.stage.quality = StageQuality.HIGH;
 		Lib.current.stage.addEventListener (Event.ACTIVATE, stage_onActivate);
 		Lib.current.stage.addEventListener (Event.DEACTIVATE, stage_onDeactivate);
 		Lib.current.stage.addEventListener (MouseEvent.MOUSE_DOWN, stage_onClick);

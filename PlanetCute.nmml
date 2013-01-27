@@ -7,17 +7,21 @@
 
  
   <window width="1024" height="768" fps="30" orientation="landscape" resizable="true" background="0x000000"    />
+  <window width="1024" height="768" fps="30" orientation="landscape" resizable="true" background="0x000000"  fullscreen="true" if="ios" />
+
   <set name="BUILD_DIR" value="out" />
 
   <classpath name="src" />
 
   <haxelib name="nme" />
   <haxelib name="actuate" />
-
+ 
   <assets path="assets/imgs" rename="assets/imgs" include="*" />
   <assets path="assets/fonts" rename="assets/fonts" include="*" />
-  <assets path="assets/music" rename="assets/music" type="music" include="*" />
-  <assets path="assets/sounds" rename="assets/sounds" type="sound" include="*" />
+  <assets path="assets/music" rename="assets/music" type="music" include="*" unless="ios"/>
+  <assets path="assets/ios_music" rename="assets/music" type="music" include="*" if="ios"/>
+  <assets path="assets/sounds" rename="assets/sounds" type="sound" include="*" unless="ios" />
+  <assets path="assets/ios_sounds" rename="assets/sounds" type="sound" include="*" if="ios" />
   
 <!--ANDROID-->
   <ndll name="std" />
