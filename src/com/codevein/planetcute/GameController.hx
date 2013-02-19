@@ -50,7 +50,7 @@ class GameController extends EventDispatcher {
 
 
 	public inline static var DEFAULT_FONT:String = "assets/fonts/#44v2.ttf";
-	public inline static var ITEM_GAME_FONT:String = "assets/fonts/#44v2.ttf";
+	public inline static var ITEM_GAME_FONT:String = "assets/fonts/AnjaElianeaccent002.ttf";
 
 
 	public inline static var SHOW_INTRO_SCREEN:String = "SHOW_INTRO_SCREEN";
@@ -95,6 +95,11 @@ class GameController extends EventDispatcher {
 			ext = ".caf";
 			extMusic = ".aifc";
 		#end
+
+		#if flash 
+			ext = ".mp3";
+
+		#end
 	}
 
 	public function initialize():Void {
@@ -110,11 +115,11 @@ class GameController extends EventDispatcher {
 		screens.set(SHOW_INTRO_SCREEN, new IntroScreen());
 		screens.set(SHOW_GAME_NUMBERS_SCREEN, new GameNumbersScreen());
 		screens.set(SHOW_END_SCREEN, new EndScreen());
-		screens.set(SHOW_LANG_SCREEN, new LangScreen());
+		//screens.set(SHOW_LANG_SCREEN, new LangScreen());
 		
 				
 
-		currentScreen = screens.get(SHOW_LANG_SCREEN);
+		currentScreen = screens.get(SHOW_INTRO_SCREEN);
 		rootContainer.addChild(currentScreen);
 		currentScreen.onStart();
 

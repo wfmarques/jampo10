@@ -26,6 +26,8 @@ import flash.display.Bitmap;
 import flash.events.MouseEvent;
 import flash.events.Event;
 
+import flash.filters.GlowFilter;
+
 
 class IntroScreen extends BaseScreen {
 
@@ -40,6 +42,8 @@ class IntroScreen extends BaseScreen {
 	private var titleWidth:Float;
 	private var gridW:Float;
 	private var gridH:Float;
+
+	private var selColor:Int = 0xFF6600; 
 	
 	
 	private var lastTile:Tile;
@@ -111,27 +115,42 @@ class IntroScreen extends BaseScreen {
 		ptButton.addChild(TextUtil.getInstance().createTextField(GameController.DEFAULT_FONT, "Português\n", 48, 0xfbc90e, true));
 		
 
+
+
 		
 		
 	}	
 
-
+	private function applyGlow(obj:Dynamic,resObj:Dynamic = null) {
+		var glow:GlowFilter = new GlowFilter(selColor, 1, 10, 10, 10);
+		obj.filters = [glow];
+		if (resObj != null) {
+			resObj.filters = null;
+		}
+	}
+	private function onClickStar(evt:Event) {
+		jumpActor();
+	}	
 	private function onEnglish(evt:Event) {
 		GameController.getInstance().playClickSound();
 		GameController.getInstance().currentLanguage = "en";
 		
-		ptButton.alpha = 0.4;
-		enButton.alpha = 1.0;
-		
+		//ptButton.alpha = 0.4;
+		//enButton.alpha = 1.0;
+		applyGlow(enButton, ptButton);
+		ptButton.filters = null;
+		jumpActor();
 	}
 
 	private function onPortuguese(evt:Event) {
 		GameController.getInstance().playClickSound();
 		GameController.getInstance().currentLanguage = "pt";
 		
-		enButton.alpha = 0.4;
-		ptButton.alpha = 1.0;
-		
+		//enButton.alpha = 0.4;
+		//ptButton.alpha = 1.0;
+		applyGlow(ptButton, enButton);
+	
+		jumpActor();
 	}
 
 	private function onCreateTile(tile:Tile) {
@@ -145,13 +164,15 @@ class IntroScreen extends BaseScreen {
 
 	private function onCreateObject(tile:Tile) {
 		Actuate.tween(tile, 0.5, { y:tile.originY-20} ).ease(Quad.easeInOut).repeat().reflect();
-
+		tile.mouseEnabled = true;
+		tile.addEventListener(MouseEvent.CLICK, onClickStar);
+		
 	}
 
 
 	public override function onStart() {
 
-		Actuate.reset();
+		//Actuate.reset();
 		
 		gameTitle.y = 30;
  		gameTitle.x = ((GameController.SCREEN_WIDTH - titleWidth) * 0.5);
@@ -177,7 +198,7 @@ class IntroScreen extends BaseScreen {
  		engine.putObjectOverTile(actor, 3, 1);
 
  		if (lastTile != null) {
- 			var star:Tile = engine.findObjectByGridPosition(lastTile.gridX, lastTile.gridY);
+ 			var star:Tile = engine.findObjectByGridPosition(3, 3);
 			star.visible = true;
 			star.alpha = 0;
 			Actuate.tween(star, 4, { alpha:1} ).ease(Quad.easeInOut);
@@ -196,14 +217,23 @@ class IntroScreen extends BaseScreen {
 		
 		enButton.y = gridH + tileGrid.y - enButton.height + 10;
 		enButton.x = tileGrid.x ;
-		enButton.alpha = (GameController.getInstance().currentLanguage=="en")?1.0:0.4;
+		if (GameController.getInstance().currentLanguage=="en") {
+			applyGlow(enButton, ptButton);
+		}
+
 		addChild(enButton);
 
 		ptButton.y = gridH + tileGrid.y - ptButton.height + 10;
 		ptButton.x = tileGrid.x + gridW - ptButton.width;
-		ptButton.alpha = (GameController.getInstance().currentLanguage=="pt")?1.0:0.4;
+		if (GameController.getInstance().currentLanguage=="pt") {
+			applyGlow(ptButton, enButton);
+		}
 		
 		addChild(ptButton);
+
+
+		ptButton.alpha = 1.0;
+		enButton.alpha = 1.0;
 
 	}
 
@@ -228,17 +258,14 @@ class IntroScreen extends BaseScreen {
 		
 		Actuate.tween(gameTitle, 1, {  y: -300 }, false).delay(1).onComplete(removeAnimationComplete);
 		GameController.getInstance().playJumpSound2();
-		var star:Tile = engine.findObjectByGridPosition(lastTile.gridX, lastTile.gridY);
+		var star:Tile = engine.findObjectByGridPosition(3, 3);
 		star.visible = false;	
 		
 
 	}
 
-	public override function updateMousePosition( aSX:Float, aSY:Float ) {
-
-		super.updateMousePosition( aSX, aSY );
-
-		var tile:Tile = engine.findTileByMousePosition(aSX , aSY);
+	public function jumpActor() {
+		var tile:Tile = engine.findTileByGridPosition(3 , 3);
 
 		if (tile != null && tile.type == Tile.TYPE_GROUND_TALL ) {
 
@@ -253,11 +280,14 @@ class IntroScreen extends BaseScreen {
 	    	Actuate.motionPath (actor, 0.5, { x: xPath.x, y: xPath.y } ).ease(Quad.easeInOut).onComplete(goNumbersGame);
 	    	GameController.getInstance().playJumpSound();
 	    	
-	    
-			//Actuate.tween(tile, 0.5, { y: (tile.y + 80) }, false).delay(0.5).ease(Quad.easeOut);
-			//tile.disabled = true;
-		
 		}
+	}
+
+	public override function updateMousePosition( aSX:Float, aSY:Float ) {
+
+		super.updateMousePosition( aSX, aSY );
+
+
 
 	}	
 	

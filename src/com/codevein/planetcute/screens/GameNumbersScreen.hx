@@ -85,7 +85,7 @@ class GameNumbersScreen extends BaseScreen {
 			var value:String = maps.getData(phase).answers[nextItem++];
 			var numText:TextField = TextUtil.getInstance().createTextField(GameController.ITEM_GAME_FONT, value, 64, 0x000033);
 			numText.x = (tile.width - numText.width) * 0.5;
-			numText.y = (tile.height - numText.height) * 0.1;
+			numText.y = (tile.height - numText.height) * 0.2;
 			tile.answerData = value;
 			tile.addChild(numText);
 			

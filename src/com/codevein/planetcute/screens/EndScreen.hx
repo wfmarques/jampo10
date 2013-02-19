@@ -59,15 +59,16 @@ class EndScreen extends BaseScreen {
 	private function construct ():Void {
 		numCount = 1;
 		blinkStar = new Entity(Assets.getBitmapData ("assets/imgs/Star.png"));
-		numText = TextUtil.getInstance().createTextField(GameController.ITEM_GAME_FONT, numCount+"", 56, 0x000033);
+		
+		numText = TextUtil.getInstance().createTextField(GameController.ITEM_GAME_FONT, numCount+"", 54, 0x000033);
 		numText.x = (blinkStar.width  - numText.width) * 0.5;
-		numText.y = 65;
+		numText.y = (blinkStar.height  - numText.height) * 0.7;
 		blinkStar.addChild(numText);
 
 		credit = new Sprite();
-		title = TextUtil.getInstance().createTextField(GameController.ITEM_GAME_FONT, "Title", 25, 0xFFFFFF);
+		title = TextUtil.getInstance().createTextField(GameController.DEFAULT_FONT, "Title", 25, 0xFFFFFF);
 		title.backgroundColor = 0x000000;
-		person = TextUtil.getInstance().createTextField(GameController.ITEM_GAME_FONT, "Person Name", 32, 0xFFFFFF);
+		person = TextUtil.getInstance().createTextField(GameController.DEFAULT_FONT, "Person Name", 32, 0xFFFFFF);
 		person.backgroundColor = 0x000000;		
 		credit.addChild(title);
 		credit.addChild(person);
@@ -142,19 +143,20 @@ class EndScreen extends BaseScreen {
 
 		Actuate.tween(ship, 2, {x: 400, y:50} ).delay(2).ease(Quad.easeInOut).onComplete(function(){
 				canClick = true;
+				blinkStar.alpha = 0;
 				blinkStar.visible = true;
 			});
 
-		Actuate.tween(GameController.getInstance().background, 4, {  alpha: 0 }, false).onComplete(function (){
+		Actuate.timer(2).onComplete ( function () {
 				stars = new Array<Sprite>();
 				for (i in 0...TOTAL_STARS) {
 					stars[i] = createStar();
 				}
 
 				this.addEventListener(flash.events.Event.ENTER_FRAME, onEnterFrame );
-   
-
-			});
+				
+		} );
+		Actuate.tween(GameController.getInstance().background, 4, {  alpha: 0 }, false);
 
 		
 	}
@@ -232,8 +234,7 @@ class EndScreen extends BaseScreen {
 					numCount++;
 					numText.text = numCount+"";
 					numText.x = (blinkStar.width  - numText.width) * 0.5;
-
-					
+					numText.y = (blinkStar.height  - numText.height) * 0.7;
 	
 			});
 			
