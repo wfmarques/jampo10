@@ -25,6 +25,17 @@ import flash.media.SoundChannel;
 import flash.media.Sound;
 import flash.media.SoundTransform;
 
+import com.codevein.planetcute.util.TextUtil;
+import flash.text.TextField;
+
+import flash.events.MouseEvent;
+import flash.events.Event;
+
+import nme.net.URLRequest;
+import nme.Lib;
+
+
+
 class GameController extends EventDispatcher {	
 
 	
@@ -72,6 +83,9 @@ class GameController extends EventDispatcher {
 	public var actor:Entity = null;
 	public var ship:Entity = null;
 	public var background:Bitmap; 
+	public var appStore:Sprite; 
+	public var playStore:Sprite; 
+	
 	public var currentLanguage = "en";
 	private var ext = ".wav";
 	private var extMusic = ".mp3";
@@ -102,14 +116,76 @@ class GameController extends EventDispatcher {
 		#end
 	}
 
+	#if flash 
+		public function goToAppStore(evt:Event) {
+
+			Lib.getURL (new URLRequest ("https://itunes.apple.com/app/jampo-10/id597225094?ls=1&mt=8"));
+
+		}
+
+		public function goToPlayStore(evt:Event) {
+			
+			Lib.getURL (new URLRequest ("http://play.google.com/store/apps/details?id=com.codevein.jampo10"));
+		
+		}
+
+		public function goToJampoSite(evt:Event) {
+			
+			Lib.getURL (new URLRequest ("http://jampogame.com"));
+		
+		}
+
+		
+	#end	
+
 	public function initialize():Void {
 
+		
 		background = new Bitmap(Assets.getBitmapData ("assets/imgs/background.png"));	
 
 		rootContainer.addChild(background);
-			
 		
+		#if flash 
+			
+			appStore = new Sprite();
 
+			appStore.addChild(TextUtil.getInstance().createTextField(GameController.ITEM_GAME_FONT, "iPhone/iPad", 16, 0xfbc90e, true));
+			var img:Bitmap = new Bitmap(Assets.getBitmapData ("assets/imgs/appstore.png")); 
+			img.y = 30;
+			appStore.addChild(img);
+			rootContainer.addChild(appStore);
+			appStore.x = 20;
+			appStore.y = 750 - appStore.height;
+
+
+			playStore = new Sprite();
+
+			playStore.addChild(TextUtil.getInstance().createTextField(GameController.ITEM_GAME_FONT, "Android", 16, 0xfbc90e, true));
+			img = new Bitmap(Assets.getBitmapData ("assets/imgs/android.png")); 
+			img.y = 30;
+			playStore.addChild(img);
+			rootContainer.addChild(playStore);
+			playStore.x = 20 + appStore.x + appStore.width;
+			playStore.y = 750 - appStore.height;
+
+
+			appStore.mouseEnabled = true;
+			appStore.addEventListener(MouseEvent.CLICK, goToAppStore);
+
+			playStore.mouseEnabled = true;
+			playStore.addEventListener(MouseEvent.CLICK, goToPlayStore);
+
+
+			var jamposite:TextField = TextUtil.getInstance().createTextField(GameController.ITEM_GAME_FONT, "Wesley Marques - http://jampogame.com", 16, 0xfbc90e, true);
+			jamposite.x = 1024 - 20 - jamposite.width ;
+			jamposite.y = 750 - appStore.height;
+
+			jamposite.mouseEnabled = true;
+			jamposite.addEventListener(MouseEvent.CLICK, goToJampoSite);
+
+
+			rootContainer.addChild(jamposite);
+		#end
 		screens = new Hash<BaseScreen>();
 
 		screens.set(SHOW_INTRO_SCREEN, new IntroScreen());

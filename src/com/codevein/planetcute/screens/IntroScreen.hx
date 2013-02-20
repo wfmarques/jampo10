@@ -28,7 +28,12 @@ import flash.events.Event;
 
 import flash.filters.GlowFilter;
 
+#if flash 
+		
+import mochi.as3.MochiAd;
+import mochi.as3.MochiServices;
 
+#end
 class IntroScreen extends BaseScreen {
 
 
@@ -114,7 +119,7 @@ class IntroScreen extends BaseScreen {
 
 		ptButton.addChild(TextUtil.getInstance().createTextField(GameController.DEFAULT_FONT, "Português\n", 48, 0xfbc90e, true));
 		
-
+		
 
 
 		
@@ -173,6 +178,15 @@ class IntroScreen extends BaseScreen {
 	public override function onStart() {
 
 		//Actuate.reset();
+
+		#if flash 
+		Actuate.timer (0.1).onComplete (function () {
+				//MochiServices.connect("753bc03e0b2c79fc", this);
+				//MochiAd.showPreGameAd( { id:"753bc03e0b2c79fc", res:"1024x768", clip: this} );
+				MochiAd.showPreGameAd({clip:root, id:"753bc03e0b2c79fc", res:"1024x768", ad_skipped:function(){trace('PIULOO');} });
+			}
+		);
+		#end
 		
 		gameTitle.y = 30;
  		gameTitle.x = ((GameController.SCREEN_WIDTH - titleWidth) * 0.5);

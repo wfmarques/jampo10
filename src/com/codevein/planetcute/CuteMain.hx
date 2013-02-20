@@ -10,14 +10,17 @@ import flash.events.MouseEvent;
 import nme.Assets;
 
 import flash.Lib;
+import flash.display.MovieClip;
 
 import com.eclecticdesignstudio.motion.Actuate;
 
 import com.codevein.planetcute.GameController;
+
+
 /**
  * @author Wesley Marques
  */
-class CuteMain extends Sprite {
+class CuteMain extends MovieClip {
 	
 	
 	public function new () { 
@@ -47,7 +50,11 @@ class CuteMain extends Sprite {
 		
 		GameController.getInstance().setRootContainer(this);	
 		GameController.getInstance().initialize();
+
 		Actuate.timer (1.0).onComplete (GameController.getInstance().playBackgroudMusic);
+
+		
+
 	}
 	
 	
