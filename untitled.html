@@ -1,0 +1,279 @@
+ <html>
+ <head>
+ <title>Stipple</title>
+ <meta charset='utf-8'>
+ <meta content='IE=edge,chrome=1' http-equiv='X-UA-Compatible'>
+ <meta content='stipple, stippleit, picture, label, labelling, labeling, image, annotation, annotate, in-image advertising, advertising, in-image, tag, tagging, photo tag, photo tagging' name='keywords'>
+ <meta content='Tell the stories inside your images' name='description'>
+ <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' name='viewport'>
+ <meta content='103770389680565' property='fb:app_id'>
+ <meta content='Stipple' property='og:site_name'>
+ <meta content='website' property='og:type'>
+ <meta content='Stipple' property='og:title'>
+ <meta content='Tell the stories inside your images' property='og:description'>
+ <meta content='http://stipple.com/images/logo-200x200.png' property='og:image'>
+ <meta content='http://stipple.com' property='og:url'>
+ <script>
+   if (location.protocol === 'http:')
+     location.href = location.href.replace(/^http:/, 'https:');
+ </script>
+ <meta content="authenticity_token" name="csrf-param" />
+ <meta content="ToMfVLhPynJMTzxtZAwcjQRjS8XIbqNFq1YLGNo7yQY=" name="csrf-token" />
+ <meta name="session-key" content="_session_id" />
+ <meta name="session-token" content="081464dda6dcad552c5c18f9a81bf4ba" />
+ <link href="/assets/consumer.css?1374262619" media="screen" rel="stylesheet" type="text/css" />
+ <!--[if lte IE 8]>
+ <link href="/assets/consumer_ie8.css?1374262608" media="screen" rel="stylesheet" type="text/css" />
+ <![endif]-->
+ </head>
+ <body class='c-static a-stipple_app logged-in' id='blueprint'>
+ <div id="fb-root"></div>
+ <script>(function(d, s, id) {
+   var js, fjs = d.getElementsByTagName(s)[0];
+   if (d.getElementById(id)) return;
+   js = d.createElement(s); js.id = id;
+   js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+   fjs.parentNode.insertBefore(js, fjs);
+ }(document, 'script', 'facebook-jssdk'));</script>
+ <div id='app-container'></div>
+ <div id='popover-overlay'></div>
+ <!--[if lte IE 9]>
+ <script src="/assets/consumer_ie8.js?1371597044" type="text/javascript"></script>
+ <![endif]-->
+ <script src="/assets/consumer.js?1374256858" type="text/javascript"></script>
+ <script>
+   StippleApp.Current.environment = "sandbox";
+   StippleApp.Current.user = new StippleApp.Models.User({"email":"alineuzebio@gmail.com","id":77,"last_activity_at":"2013/07/22 13:36:36 +0000","location":null,"login":"alinemarques","login_count":16,"name":"Aline Marques","super_admin":false,"tagline":null,"time_zone":null,"updated_at":"2013/07/22 14:42:37 +0000","verified":true,"website":null,"formatted_last_login_at":"2 minutes ago","roles":[],"identity_providers":[{"id":86,"provider":"facebook"}],"avatar_url":"https://d2n114n0hqrl7z.cloudfront.net/users/77/thumbnail/picture?1374500196","crypted_password?":false,"identity_links":{"facebook":"https://www.facebook.com/aline.marques.7739"},"friendly_id":"alinemarques","dots_count":0,"profile_url":"http://sandbox.stipple.com/a#browse/user/alinemarques","receive_newsletter_email":null,"receive_campaign_email":null,"receive_following_email":true,"receive_liked_photo_email":true,"receive_added_photo_to_set_email":true,"receive_photo_commented_on_email":true,"receive_friend_join_email":true,"can_change_login":true,"publish_activities_to_facebook":true,"can_create_insecure_dots":null});
+   StippleApp.Current.braintree_client_key = 'MIIBCgKCAQEA2zaXL/bni4R+heRD0Yoi3UkcCYy5/UE1xUnjuv3l6/+6Qxlwd2vRmJO/N+MkyZEnwgqRd6zjyR32qw/KJTzalih/0PP1phuh7KHXSCh2dPG623XtOe4woOKFeLXClNvHIbxO5yPnA7OEhkK/AOSw7fOx7FLCIe8L3S0+roPXva38E+9s4/QtKQHchhl7pgizyCEjcU5CiCYhgZ2E1t7g6jT0mulH4CdP+xgpYF4n4MPIwQzPMUY5gnaA1dzWilMHZoaBWJ7kRQgeb6OKt6Ymge5a6KSYdf1ZNRfPAwGhereI6Iaz9NDZsEO78TmidsNHD/Un4iy/cxyW2A0gvS5iLQIDAQAB';
+   Modernizr.touch ? $('body').addClass('touch') : $('body').addClass('desktop');
+ </script>
+ <script>
+   StippleApp.Current.user.followedUsers = new StippleApp.Collections.BaseUsers([{"id":2,"last_activity_at":"2013/07/12 19:46:33 +0000","avatar_url":"//stipple.com/images/default_avatar.jpg","name":"mpd","friendly_id":"mpd"},{"id":1,"last_activity_at":"2013/06/17 16:59:40 +0000","avatar_url":"//stipple.com/images/default_avatar.jpg","name":"stipple","friendly_id":"stipple"}]);
+   StippleApp.Current.user.set('untagged_photo_count', 0);
+   
+   StippleApp.Current.user.sites = new StippleApp.Collections.Sites({"sites":{"models":[],"page":1,"per_page":20,"total_entries":0,"total_pages":1}}.sites.models);
+   StippleApp.Current.user.sites.setupPagination({"sites":{"models":[],"page":1,"per_page":20,"total_entries":0,"total_pages":1}});
+   
+   StippleApp.Current.user.set('unread_notifications_count', 0);
+   StippleApp.Current.user.set('notifications', new StippleApp.Collections.Notifications([]));
+   StippleApp.helpers.setTitleNotificationsCount(0);
+   
+   StippleApp.facebookAppId = '103770389680565';
+   StippleApp.facebookHost = 'sandbox.stipple.com';
+   
+   window.fbAsyncInit = function() {
+     FB.init({
+       appId      : StippleApp.facebookAppId,
+       channelUrl : '//' + StippleApp.facebookHost + '/fb_channel.html'
+       //status     : true, // check login status
+       //cookie     : true, // enable cookies to allow the server to access the session
+       //xfbml      : true  // parse XFBML
+     });
+   
+     // Additional initialization code here
+   };
+   
+   // Load the SDK Asynchronously
+   (function(d){
+      var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+      if (d.getElementById(id)) {return;}
+      js = d.createElement('script'); js.id = id; js.async = true;
+      js.src = "//connect.facebook.net/en_US/all.js";
+      ref.parentNode.insertBefore(js, ref);
+    }(document));
+   
+   $(function() {
+     StippleApp.start();
+   });
+ </script>
+     <script type='text/javascript'>
+       var _stippleq = _stippleq || [];
+     </script>
+     <script type='text/javascript' src='//stipple.cachefly.net/sandbox/stipple.js'></script>
+ <script>
+   var iOS = ( navigator.userAgent.match(/(iPad|iPhone|iPod)/i) ? true : false );
+   if (iOS === true) {
+     try {
+       window.addEventListener('load', function() {
+         new FastClick(document.body);
+       }, false);
+     } catch (e) {
+       // error
+     }
+   }
+ </script>
+ <script>
+   // PPK Browser detection to allow us to work around mobile browser deficiencies. Looking at you, IOS.
+   // http://www.quirksmode.org/js/detect.html (though we have some custom changes)
+   // NOTE: Feature detection and media queries are MUCH preferred from having to fall back to this,
+   // but some cases require specific workarounds for broken browsers and operating systems.
+   
+   var BrowserDetect = {
+     init: function () {
+       this.browser = this.searchString(this.dataBrowser) || "An unknown browser";
+       this.version = this.searchVersion(navigator.userAgent)
+         || this.searchVersion(navigator.appVersion)
+         || "an unknown version";
+       this.OS = this.searchString(this.dataOS) || "an unknown OS";
+     },
+     searchString: function (data) {
+       for (var i=0;i<data.length;i++)  {
+         var dataString = data[i].string;
+         var dataProp = data[i].prop;
+         this.versionSearchString = data[i].versionSearch || data[i].identity;
+         if (dataString) {
+           if (dataString.indexOf(data[i].subString) != -1)
+             return data[i].identity;
+         }
+         else if (dataProp)
+           return data[i].identity;
+       }
+     },
+     searchVersion: function (dataString) {
+       var index = dataString.indexOf(this.versionSearchString);
+       if (index == -1) return;
+       return parseFloat(dataString.substring(index+this.versionSearchString.length+1));
+     },
+     dataBrowser: [
+       {
+         string: navigator.userAgent,
+         subString: "Chrome",
+         identity: "Chrome"
+       },
+       {   string: navigator.userAgent,
+         subString: "OmniWeb",
+         versionSearch: "OmniWeb/",
+         identity: "OmniWeb"
+       },
+       {
+         string: navigator.vendor,
+         subString: "Apple",
+         identity: "Safari",
+         versionSearch: "Version"
+       },
+       {
+         prop: window.opera,
+         identity: "Opera",
+         versionSearch: "Version"
+       },
+       {
+        string: navigator.vendor,
+        subString: "iCab",
+        identity: "iCab"
+      },
+      {
+        string: navigator.vendor,
+        subString: "KDE",
+        identity: "Konqueror"
+      },
+      {
+        string: navigator.userAgent,
+        subString: "Firefox",
+        identity: "Firefox"
+      },
+      {
+        string: navigator.vendor,
+        subString: "Camino",
+        identity: "Camino"
+      },
+      {    // for newer Netscapes (6+)
+        string: navigator.userAgent,
+        subString: "Netscape",
+        identity: "Netscape"
+      },
+      {
+        string: navigator.userAgent,
+        subString: "MSIE",
+        identity: "Explorer",
+        versionSearch: "MSIE"
+      },
+      {
+        string: navigator.userAgent,
+        subString: "Gecko",
+        identity: "Mozilla",
+        versionSearch: "rv"
+      },
+      {     // for older Netscapes (4-)
+        string: navigator.userAgent,
+        subString: "Mozilla",
+        identity: "Netscape",
+        versionSearch: "Mozilla"
+      }
+    ],
+    dataOS : [
+      {
+        string: navigator.platform,
+        subString: "Win",
+        identity: "Windows"
+      },
+      {
+        string: navigator.platform,
+        subString: "Mac",
+        identity: "Mac"
+      },
+      {
+           string: navigator.userAgent,
+           subString: "iPhone",
+           identity: "iPhone"
+      },
+      {
+           string: navigator.userAgent,
+           subString: "iPad",
+           identity: "iPad"
+      },
+      {
+        string: navigator.platform,
+        subString: "Linux",
+        identity: "Linux"
+      }
+    ]
+  
+  };
+  
+  BrowserDetect.init();
+  
+  $(function () {
+    $('body').addClass("os-" + BrowserDetect.OS.toLowerCase() + ' browser-' + BrowserDetect.browser.toLowerCase());
+  });
+</script>
+<script>
+  (function(c,a){
+    var b,d,h,e;
+    b=c.createElement("script");
+    b.type="text/javascript";
+    b.async=!0;
+    b.src=("https:"===c.location.protocol?"https:":"http:")+'//api.mixpanel.com/site_media/js/api/mixpanel.2.js';
+    d=c.getElementsByTagName("script")[0];
+    d.parentNode.insertBefore(b,d);
+    a._i=[];
+    a.init=function(b,c,f){function d(a,b){var c=b.split(".");
+    2==c.length&&(a=a[c[0]],b=c[1]);
+    a[b]=function(){a.push([b].concat(Array.prototype.slice.call(arguments,0)))}}var g=a;
+    "undefined"!==typeof f?g=a[f]=[]:f="mixpanel";
+    g.people=g.people||[];
+    h="disable track track_pageview track_links track_forms register register_once unregister identify name_tag set_config people.set people.increment".split(" ");
+    for(e=0;e<h.length;e++)d(g,h[e]);
+    a._i.push([b,c,f])};
+    a.__SV=1.1;
+    window.mixpanel=a
+  })(document,window.mixpanel||[]);
+  
+  mixpanel.init("616f762e3c4ea305d87a3908c35270e0");
+  
+  if ("Aline Marques".length) {
+    mixpanel.name_tag("Aline Marques");
+  }
+  
+  if ("77".length) {
+    mixpanel.identify('77');
+  }
+</script>
+<script>
+  (function() {
+    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+    po.src = 'https://apis.google.com/js/plusone.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+  })();
+</script>
+</body>
+</html>

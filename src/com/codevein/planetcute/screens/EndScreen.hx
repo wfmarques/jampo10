@@ -1,16 +1,17 @@
 package com.codevein.planetcute.screens;
 
 
-import nme.Assets;
+import openfl.Assets;
 
-import flash.text.TextField;
+import openfl.text.TextField;
+
 
 import flash.display.Sprite;
 
-import com.eclecticdesignstudio.motion.Actuate;
-import com.eclecticdesignstudio.motion.MotionPath;
-import com.eclecticdesignstudio.motion.easing.Quad;
-import com.eclecticdesignstudio.motion.easing.Bounce;
+import motion.Actuate;
+import motion.MotionPath;
+import motion.easing.Quad;
+import motion.easing.Bounce;
 
 import com.codevein.planetcute.engine.Tile;
 import com.codevein.planetcute.engine.TileEngine;
@@ -21,6 +22,8 @@ import com.codevein.planetcute.util.TextUtil;
 
 import com.codevein.planetcute.GameController;
 import com.codevein.planetcute.GameCreditsTexts;
+
+import flash.Lib;
 
 
 class EndScreen extends BaseScreen {
@@ -35,8 +38,8 @@ class EndScreen extends BaseScreen {
 	private var person:TextField;
 	private var credit:Sprite;
 
-	private var lastTimeTick:Float;
-	private var now :Float ;
+	private var lastTimeTick:Float = 0.0;
+	private var now :Float = 0.0;
 	private var numCount:Int;
 
 	private var stars:Array<Sprite>;
@@ -66,9 +69,9 @@ class EndScreen extends BaseScreen {
 		blinkStar.addChild(numText);
 
 		credit = new Sprite();
-		title = TextUtil.getInstance().createTextField(GameController.DEFAULT_FONT, "Title", 25, 0xFFFFFF);
+		title = TextUtil.getInstance().createTextField(GameController.DEFAULT_FONT, ".", 25, 0xFFFFFF);
 		title.backgroundColor = 0x000000;
-		person = TextUtil.getInstance().createTextField(GameController.DEFAULT_FONT, "Person Name", 32, 0xFFFFFF);
+		person = TextUtil.getInstance().createTextField(GameController.DEFAULT_FONT, "..", 32, 0xFFFFFF);
 		person.backgroundColor = 0x000000;		
 		credit.addChild(title);
 		credit.addChild(person);
@@ -80,11 +83,15 @@ class EndScreen extends BaseScreen {
 
 
 	private function loadNextCredit() {
+
 		var nextCredit:Dynamic = GameCreditsTexts.getInstance().getNextCredit();
 
 		if (nextCredit != null) {
-			Actuate.tween(credit, 0.5, {alpha:0} ).onComplete(function(){ 
 
+			trace("Next credit " + nextCredit);
+			Actuate.tween(credit, 0.5, {alpha:1} ).onComplete(function(){ 
+
+			
 				title.text = nextCredit.title;
 				person.text = nextCredit.name;
 				credit.x = ((GameController.SCREEN_WIDTH - credit.width) * 0.5) - 50  ;
@@ -99,8 +106,8 @@ class EndScreen extends BaseScreen {
 		} else {
 
 			removeChild(blinkStar);
-			Actuate.tween(credit, 0.5, {  alpha: 0 }, false).onComplete(function(){speed=0;});
-			Actuate.tween(ship, 2, {x: GameController.SCREEN_WIDTH + 100} );
+			Actuate.tween(credit, 0.5, {  alpha: 1 }, false).onComplete(function(){speed=0;});
+			Actuate.tween(ship, 2, {x: GameController.SCREEN_WIDTH + 1000} );
 			Actuate.tween(GameController.getInstance().background, 3, {  alpha: 1 }, false).onComplete(removeAnimationComplete);
 				
 
@@ -121,7 +128,7 @@ class EndScreen extends BaseScreen {
 
 		addChild(credit);
 		
-		credit.alpha = 0;
+		credit.alpha = 1;
 		loadNextCredit();
 		
 
@@ -143,7 +150,7 @@ class EndScreen extends BaseScreen {
 
 		Actuate.tween(ship, 2, {x: 400, y:50} ).delay(2).ease(Quad.easeInOut).onComplete(function(){
 				canClick = true;
-				blinkStar.alpha = 0;
+				blinkStar.alpha = 1;
 				blinkStar.visible = true;
 			});
 
@@ -206,7 +213,7 @@ class EndScreen extends BaseScreen {
 		
 		if (!animatingStar && (now - lastTimeTick) > 6000) {
 			animatingStar = true;
-			Actuate.tween(blinkStar , 0.5, {alpha:0}, false ).onComplete(function(){
+			Actuate.tween(blinkStar , 0.5, {alpha:1}, false ).onComplete(function(){
 				blinkStar.x = (Math.random () * GameController.SCREEN_WIDTH * 0.7)  ;
 				blinkStar.y = (Math.random () * GameController.SCREEN_HEIGHT * 0.7) ;
 				Actuate.tween(blinkStar, 2, {alpha:1}, false ).onComplete(function(){animatingStar = false;});
@@ -261,6 +268,9 @@ class EndScreen extends BaseScreen {
 	
 
 	public override function updateMousePosition( aSX:Float, aSY:Float ) {
+		aSY = ((aSY - Lib.current.y)/Lib.current.scaleY)  ;
+		aSX = ((aSX - Lib.current.x)/Lib.current.scaleX) ;
+		
 
 		if (canClick) {
 			super.updateMousePosition( aSX, aSY );

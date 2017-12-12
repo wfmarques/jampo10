@@ -1,6 +1,6 @@
 package com.codevein.planetcute.util;
 
-import nme.Assets;
+import openfl.Assets;
 
 import flash.text.TextField;
 import flash.text.Font;
@@ -8,6 +8,8 @@ import flash.text.TextFormat;
 /**
  * @author Wesley Marques
  */
+
+
 class TextUtil  {
 
 	private static var _instance:TextUtil = null;
@@ -21,6 +23,7 @@ class TextUtil  {
 
 		if (_instance == null) {
 			_instance = new TextUtil();
+		
 		}
 
 		return _instance;
@@ -33,12 +36,12 @@ class TextUtil  {
 		var format:TextFormat = new TextFormat (font.fontName, fontSize, fontColor);
 		var textField:TextField = new TextField ();
 		textField.autoSize = flash.text.TextFieldAutoSize.LEFT;
+		textField.embedFonts = true;
 		textField.multiline = true;
 		textField.defaultTextFormat = format;
 		textField.selectable = false;
-		textField.embedFonts = true;
 		textField.text = text;
-		textField.cacheAsBitmap = true;
+		textField.cacheAsBitmap = false;
 		textField.height += 5;
 		if (dropShadow)
 			textField.filters = [new flash.filters.DropShadowFilter()];

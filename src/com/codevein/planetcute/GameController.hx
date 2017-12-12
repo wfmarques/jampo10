@@ -1,6 +1,6 @@
 package com.codevein.planetcute;
 
-import nme.Assets;
+import openfl.Assets;
 
 import flash.events.EventDispatcher;
 import flash.events.Event;
@@ -16,7 +16,6 @@ import com.codevein.planetcute.screens.GameNumbersScreen;
 import com.codevein.planetcute.screens.EndScreen;
 import com.codevein.planetcute.screens.LangScreen;
 
-
 import com.codevein.planetcute.engine.Tile;
 import com.codevein.planetcute.engine.TileEngine;
 import com.codevein.planetcute.engine.Entity;
@@ -27,12 +26,16 @@ import flash.media.SoundTransform;
 
 import com.codevein.planetcute.util.TextUtil;
 import flash.text.TextField;
+import flash.text.Font;
+
 
 import flash.events.MouseEvent;
 import flash.events.Event;
 
-import nme.net.URLRequest;
-import nme.Lib;
+
+import flash.net.URLRequest;
+import flash.Lib;
+
 
 
 
@@ -77,18 +80,19 @@ class GameController extends EventDispatcher {
 
 	private static var _instance:GameController = null;
 
-	private var rootContainer:Sprite = null;
-	private var screens:Hash<BaseScreen> = null;
+	public var rootContainer:Sprite = null;
+	private var screens:Map<String,BaseScreen> = null;
 	public var currentScreen:BaseScreen = null;
 	public var actor:Entity = null;
 	public var ship:Entity = null;
 	public var background:Bitmap; 
 	public var appStore:Sprite; 
 	public var playStore:Sprite; 
+	private var channelMusic:SoundChannel;
 	
 	public var currentLanguage = "en";
 	private var ext = ".wav";
-	private var extMusic = ".mp3";
+	private var extMusic = ".ogg";
 	
 
 	private var soundCache:Array<Sound> ;
@@ -105,10 +109,10 @@ class GameController extends EventDispatcher {
 
 
 	private function construct ():Void {
-		#if ios 
-			ext = ".caf";
-			extMusic = ".aifc";
-		#end
+		// #if ios 
+		// 	ext = ".caf";
+		// 	extMusic = ".aifc";
+		// #end
 
 		#if flash 
 			ext = ".mp3";
@@ -139,11 +143,14 @@ class GameController extends EventDispatcher {
 	#end	
 
 	public function initialize():Void {
-
 		
+		cacheSound();
+
 		background = new Bitmap(Assets.getBitmapData ("assets/imgs/background.png"));	
 
 		rootContainer.addChild(background);
+		background.x = -200;
+		background.y = -200;
 		
 		#if flash 
 			
@@ -186,7 +193,7 @@ class GameController extends EventDispatcher {
 
 			rootContainer.addChild(jamposite);
 		#end
-		screens = new Hash<BaseScreen>();
+		screens = new Map<String,BaseScreen>();
 
 		screens.set(SHOW_INTRO_SCREEN, new IntroScreen());
 		screens.set(SHOW_GAME_NUMBERS_SCREEN, new GameNumbersScreen());
@@ -199,7 +206,6 @@ class GameController extends EventDispatcher {
 		rootContainer.addChild(currentScreen);
 		currentScreen.onStart();
 
-		cacheSound();
 	}
 
 	public function gotToScreen(screenId:String) {
@@ -260,21 +266,21 @@ class GameController extends EventDispatcher {
 
 		soundCache = new Array<Sound>();
 
-		soundCache[AUDIO_BACKGROUND] = Assets.getSound ("assets/music/mushroom_dance_0"+extMusic);
+		soundCache[AUDIO_BACKGROUND] = Assets.getMusic ("assets/music/mushroom_dance_0"+extMusic, true);
 
 		for (i in 0...10) {
-			soundCache[i+1] = Assets.getSound ("assets/sounds/_"+ (i+1) +"_pt"+ ext);
+			soundCache[i+1] = Assets.getSound ("assets/sounds/_"+ (i+1) +"_pt"+ ext, true);
 		
 		}
 		
-		soundCache[AUDIO_JUMP_1]  = Assets.getSound ("assets/sounds/qubodup-cfork-ccby3-jump"+ ext);
-		soundCache[AUDIO_JUMP_2]  = Assets.getSound ("assets/sounds/apricotjumpbounce-jump"+ ext);
-		soundCache[AUDIO_FAIL]    = Assets.getSound ("assets/sounds/fail"+ ext);
-		soundCache[AUDIO_CLAP]    = Assets.getSound ("assets/sounds/clap"+ ext);
-		soundCache[AUDIO_CLICK]   = Assets.getSound ("assets/sounds/click"+ ext);
+		soundCache[AUDIO_JUMP_1]  = Assets.getSound ("assets/sounds/qubodup-cfork-ccby3-jump"+ ext, true);
+		soundCache[AUDIO_JUMP_2]  = Assets.getSound ("assets/sounds/apricotjumpbounce-jump"+ ext, true);
+		soundCache[AUDIO_FAIL]    = Assets.getSound ("assets/sounds/fail"+ ext, true);
+		soundCache[AUDIO_CLAP]    = Assets.getSound ("assets/sounds/clap"+ ext, true);
+		soundCache[AUDIO_CLICK]   = Assets.getSound ("assets/sounds/click"+ ext, true);
 
 		for (i in 20...30) {
-			soundCache[i+1] = Assets.getSound ("assets/sounds/_"+ (i+1-20) +"_en"+ ext);
+			soundCache[i+1] = Assets.getSound ("assets/sounds/_"+ (i+1-20) +"_en"+ ext, true);
 		}
 				
 	}
@@ -284,69 +290,76 @@ class GameController extends EventDispatcher {
 	}
 
 	public function playBackgroudMusic() {
+		if (soundCache[AUDIO_BACKGROUND] != null) {	
+			var newTransform = new SoundTransform(0.5,0);
+			trace("PLAY MUSIC  assets/music/mushroom_dance_0"+extMusic);
+			channelMusic = soundCache[AUDIO_BACKGROUND].play(0,10000,newTransform);
+		}
+	}
 
-		var newTransform = new SoundTransform(0.5,0);
-		soundCache[AUDIO_BACKGROUND].play(0,10000,newTransform);
+	public function stopBackgroudMusic() {
+		if (channelMusic != null) {		
+			channelMusic.stop();
+		}
 	}
 
 	
 
-	public function playJumpSound() {
+	public function playJumpSound() {	
+		if (soundCache[AUDIO_JUMP_1] != null) {
+			var newTransform = new SoundTransform(0.1,0);	
+			soundCache[AUDIO_JUMP_1].play(0,0,newTransform);	
+		}		
 
-			
-		var newTransform = new SoundTransform(0.1,0);	
-		soundCache[AUDIO_JUMP_1].play(0,0,newTransform);
-	
 	}
 
 
 	public function playClickSound() {
-
-			
-		var newTransform = new SoundTransform(0.8,0);	
-		soundCache[AUDIO_CLICK].play(0,0,newTransform);
-	
+		if (soundCache[AUDIO_CLICK] != null) {	
+			var newTransform = new SoundTransform(0.8,0);	
+			soundCache[AUDIO_CLICK].play(0,0,newTransform);
+		}
 	}
 
 
 
 	public function playJumpSound2() {
-		
-		var newTransform = new SoundTransform(0.1,0);	
-		soundCache[AUDIO_JUMP_2].play(0,0,newTransform);
-
+		if (soundCache[AUDIO_JUMP_2] != null) {
+			var newTransform = new SoundTransform(0.1,0);	
+			soundCache[AUDIO_JUMP_2].play(0,0,newTransform);
+		}
 	}
 
 	public function playFailSound() {
 		
-		var newTransform = new SoundTransform(0.8,0);	
-		soundCache[AUDIO_FAIL].play(0,0,newTransform);
+		var newTransform = new SoundTransform(0.8,0);
+		if (soundCache[AUDIO_FAIL] != null) {
+			soundCache[AUDIO_FAIL].play(0,0,newTransform);	
+		}	
+	
 
 	}
 
 
 	public function playNumberSound(number:String) {
-
-		var newTransform = new SoundTransform(0.8,0);	
-		var idx:Int = Std.parseInt(number);
-		if (currentLanguage == "en") {
-			idx = idx + 20;
+		if (soundCache != null) {
+			var newTransform = new SoundTransform(0.8,0);	
+			var idx:Int = Std.parseInt(number);
+			if (currentLanguage == "en") {
+				idx = idx + 20;
+			}
+			if (soundCache[idx] != null) {
+				soundCache[idx].play(0,0,newTransform);
+			}
 		}
-		soundCache[idx].play(0,0,newTransform);
-
 	}
 
 
 	public function playClapSound() {
-			
-		var newTransform = new SoundTransform(0.8,0);	
-		soundCache[AUDIO_CLAP].play(0,0,newTransform);
-
+		if (soundCache[AUDIO_CLAP] != null) {	
+			var newTransform = new SoundTransform(0.8,0);	
+			soundCache[AUDIO_CLAP].play(0,0,newTransform);
+		}
 	}
-	
-
-	
-
-
 
 }

@@ -2,8 +2,8 @@ package com.codevein.planetcute;
 
 class GameCreditsTexts  {	
 
-	private var count:Int;
-	private var credits:Array<Dynamic> ;
+	private  var count:Int;
+	private  var credits:Array<Dynamic> ;
 	private static var _instance:GameCreditsTexts ;
 
 

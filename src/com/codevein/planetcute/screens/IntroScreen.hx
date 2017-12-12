@@ -1,16 +1,16 @@
 package com.codevein.planetcute.screens;
 
 
-import nme.Assets;
+import openfl.Assets;
 
 import flash.text.TextField;
 
 import flash.display.Sprite;
 
-import com.eclecticdesignstudio.motion.Actuate;
-import com.eclecticdesignstudio.motion.MotionPath;
-import com.eclecticdesignstudio.motion.easing.Quad;
-import com.eclecticdesignstudio.motion.easing.Bounce;
+import motion.Actuate;
+import motion.MotionPath;
+import motion.easing.Quad;
+import motion.easing.Bounce;
 
 import com.codevein.planetcute.engine.Tile;
 import com.codevein.planetcute.engine.TileEngine;
@@ -34,6 +34,8 @@ import mochi.as3.MochiAd;
 import mochi.as3.MochiServices;
 
 #end
+
+
 class IntroScreen extends BaseScreen {
 
 
@@ -128,10 +130,13 @@ class IntroScreen extends BaseScreen {
 
 	private function applyGlow(obj:Dynamic,resObj:Dynamic = null) {
 		var glow:GlowFilter = new GlowFilter(selColor, 1, 10, 10, 10);
-		obj.filters = [glow];
-		if (resObj != null) {
-			resObj.filters = null;
+		if (obj.filters) {
+			obj.filters = [glow];
+			if (resObj != null) {
+				resObj.filters = null;
+			}
 		}
+		
 	}
 	private function onClickStar(evt:Event) {
 		jumpActor();
@@ -183,7 +188,7 @@ class IntroScreen extends BaseScreen {
 		Actuate.timer (0.1).onComplete (function () {
 				//MochiServices.connect("753bc03e0b2c79fc", this);
 				//MochiAd.showPreGameAd( { id:"753bc03e0b2c79fc", res:"1024x768", clip: this} );
-				MochiAd.showPreGameAd({clip:root, id:"753bc03e0b2c79fc", res:"1024x768", ad_skipped:function(){trace('PIULOO');} });
+				MochiAd.showPreGameAd({clip:GameController.getInstance().rootContainer, id:"753bc03e0b2c79fc", res:"1024x768" });
 			}
 		);
 		#end

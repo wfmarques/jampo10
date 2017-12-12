@@ -1,17 +1,17 @@
 package com.codevein.planetcute.screens;
 
 
-import nme.Assets;
+import openfl.Assets;
 
 import flash.text.TextField;
 
 import flash.display.Sprite;
 
 
-import com.eclecticdesignstudio.motion.Actuate;
-import com.eclecticdesignstudio.motion.MotionPath;
-import com.eclecticdesignstudio.motion.easing.Quad;
-import com.eclecticdesignstudio.motion.easing.Bounce;
+import motion.Actuate;
+import motion.MotionPath;
+import motion.easing.Quad;
+import motion.easing.Bounce;
 
 import com.codevein.planetcute.util.TextUtil;
 

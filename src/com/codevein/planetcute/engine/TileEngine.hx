@@ -3,7 +3,7 @@ package com.codevein.planetcute.engine;
 import flash.display.BitmapData;
 import flash.display.Sprite;
 import flash.geom.Point;
-
+import flash.Lib;
 
 class TileEngine  {
 
@@ -227,8 +227,11 @@ class TileEngine  {
 	}	
 
 	public function findGridPositionByMouse(aX:Float, aY:Float):Point {
-		var i:Int = Std.int( ( aY - this.grid.y ) / VIRTUAL_TILE_HEIGHT );
-		var j:Int = Std.int( ( aX  - this.grid.x) / VIRTUAL_TILE_WIDTH );
+		aY = ((aY - Lib.current.y)/Lib.current.scaleY)  ;
+		aX = ((aX - Lib.current.x)/Lib.current.scaleX) ;
+		
+		var i:Int = Std.int( ( aY - this.grid.y   ) / VIRTUAL_TILE_HEIGHT );
+		var j:Int = Std.int( ( aX  - this.grid.x   ) / VIRTUAL_TILE_WIDTH );
 		var p:Point = new Point();
 		p.x = j;
 		p.y = i;
@@ -237,9 +240,11 @@ class TileEngine  {
 	}	
 
 	public function findTileByMousePosition(aX:Float, aY:Float):Tile {
-
-		var i:Int = Std.int( ( aY - this.grid.y ) / VIRTUAL_TILE_HEIGHT );
-		var j:Int = Std.int( ( aX  - this.grid.x) / VIRTUAL_TILE_WIDTH );
+		aY = ((aY - Lib.current.y)/Lib.current.scaleY)  ;
+		aX = ((aX - Lib.current.x)/Lib.current.scaleX) ;
+		
+		var i:Int = Std.int( ( aY - this.grid.y  ) / VIRTUAL_TILE_HEIGHT   );
+		var j:Int = Std.int( ( aX  - this.grid.x  ) / VIRTUAL_TILE_WIDTH   );
 		
 		var tile:Tile = null;
 		var dp:flash.display.DisplayObject = grid.getChildByName( "tile_"+i+"_"+j );

@@ -1,16 +1,16 @@
 package com.codevein.planetcute.screens;
 
 
-import nme.Assets;
+import openfl.Assets;
 
 import flash.text.TextField;
 
 import flash.display.Sprite;
 
-import com.eclecticdesignstudio.motion.Actuate;
-import com.eclecticdesignstudio.motion.MotionPath;
-import com.eclecticdesignstudio.motion.easing.Quad;
-import com.eclecticdesignstudio.motion.easing.Bounce;
+import motion.Actuate;
+import motion.MotionPath;
+import motion.easing.Quad;
+import motion.easing.Bounce;
 
 import com.codevein.planetcute.engine.Tile;
 import com.codevein.planetcute.engine.TileEngine;
@@ -116,7 +116,7 @@ class GameNumbersScreen extends BaseScreen {
 		tileGrid.alpha = 1;
 
 		tileGrid.x = ((GameController.SCREEN_WIDTH - tileGrid.width) * 0.5);
-		tileGrid.y = ((GameController.SCREEN_HEIGHT - tileGrid.height) * 0.55) ;
+		tileGrid.y = ((GameController.SCREEN_HEIGHT - tileGrid.height) * 0.3) ;
 
 		addChild(tileGrid);
 
@@ -225,9 +225,11 @@ class GameNumbersScreen extends BaseScreen {
 				} else {
 					nextItem++;
 					lastTile = tile;
-					Actuate.timer (0.5).onComplete (function (obj) {
+					Actuate.timer (0.5).onComplete (function (obj:Dynamic) {
 						var glow:GlowFilter = new GlowFilter(0xFF9933, 1, 10, 10, 10);
-		    			obj.filters = [glow];
+						if (obj.filters) {
+							obj.filters = [glow];
+						}	    			
 		    		},[tile.getChildAt(1)]);
 					Actuate.timer (0.5).onComplete (GameController.getInstance().playNumberSound, [tile.answerData]);
 					var star:Tile = engine.findObjectByGridPosition(target.x, target.y);
