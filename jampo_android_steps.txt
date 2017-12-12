@@ -1,9 +1,0 @@
-keytool -genkey -v -keystore jampo10.keystore -alias jampo10 -keyalg RSA -keysize 2048 -validity 10000
-
-
-zip -d jampo10.apk META-INF/\*
-
-jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore jampo10.keystore jampo10.apk jampo10
-
-
-/Users/wesleymarques/Developer/apps/android-sdk-mac_86/tools/zipalign -v 4 jampo10.apk jampo-aligned.apk
