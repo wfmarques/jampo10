@@ -32,3 +32,8 @@ bin/
 out/
 gen/
 .DS_Store
+
+kspass.txt
+jampo_android_steps.tx
+jampo10.keystore
+Screenshots
